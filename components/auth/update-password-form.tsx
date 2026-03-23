@@ -57,7 +57,7 @@ export function UpdatePasswordForm({
               <div className="grid gap-2">
                 <Label htmlFor="password">New password</Label>
                 <Input
-                  id="password"
+                  id="password" 
                   type="password"
                   placeholder="New password"
                   required
