@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import "./globals.css"
+import "./fonts.css"
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
