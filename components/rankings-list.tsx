@@ -149,6 +149,14 @@ function getAvatarUrl(avatarUrl?: string | null) {
   return avatarUrl || FALLBACK_AVATAR
 }
 
+function getPodiumDisplayOrder(users: LeaderboardUser[]) {
+  const podiumOrder = [2, 1, 3]
+
+  return podiumOrder
+    .map((rank) => users.find((user) => user.rank === rank))
+    .filter((user): user is LeaderboardUser => user !== undefined)
+}
+
 function getRankChange(previousRank?: number | null, currentRank?: number) {
   if (previousRank == null || currentRank == null) {
     return 0
@@ -315,6 +323,7 @@ export function RankingsList({
 }: RankingsListProps) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
+  const orderedPodiumUsers = getPodiumDisplayOrder(podiumUsers)
   const allUsers = [...podiumUsers, ...rankingUsers]
   const selectedUser =
     allUsers.find((user) => user.id === selectedUserId) ?? null
@@ -339,7 +348,7 @@ export function RankingsList({
   return (
     <>
       <div className="relative z-10 mb-2 flex w-full max-w-2xl items-end justify-center space-x-1 px-4 sm:space-x-4">
-        {podiumUsers.map((user) => (
+        {orderedPodiumUsers.map((user) => (
           <PodiumPlace
             key={user.id}
             user={user}
