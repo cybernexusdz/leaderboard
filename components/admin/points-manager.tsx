@@ -24,6 +24,7 @@ interface PointsManagerProps {
     memberId: string
     name: string
     image: string
+    status: "active" | "inactive"
   }) => void
 }
 
@@ -45,6 +46,9 @@ export function PointsManager({
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [memberName, setMemberName] = useState("")
   const [memberImage, setMemberImage] = useState("")
+  const [memberStatus, setMemberStatus] = useState<"active" | "inactive">(
+    "active",
+  )
 
   const hasSelection = selectedMember !== null || selectedCount > 0
 
@@ -53,11 +57,13 @@ export function PointsManager({
       setIsModalOpen(false)
       setMemberName("")
       setMemberImage("")
+      setMemberStatus("active")
       return
     }
 
     setMemberName(selectedMember.name)
     setMemberImage(selectedMember.image ?? "")
+    setMemberStatus(selectedMember.status)
   }, [selectedMember])
 
   const historyPreview = useMemo(() => history.slice(0, 8), [history])
@@ -104,6 +110,7 @@ export function PointsManager({
       memberId: selectedMember.id,
       name: memberName,
       image: memberImage,
+      status: memberStatus,
     })
   }
 
@@ -342,6 +349,34 @@ export function PointsManager({
                   />
                 </div>
 
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <div className="inline-flex rounded-full bg-muted p-1">
+                    <button
+                      type="button"
+                      onClick={() => setMemberStatus("active")}
+                      className={
+                        memberStatus === "active"
+                          ? "rounded-full bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm"
+                          : "rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      }
+                    >
+                      Active
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setMemberStatus("inactive")}
+                      className={
+                        memberStatus === "inactive"
+                          ? "rounded-full bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm"
+                          : "rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                      }
+                    >
+                      Inactive
+                    </button>
+                  </div>
+                </div>
+
                 <div className="rounded-xl border border-border bg-muted/20 p-4">
                   <div className="mb-3 text-sm font-medium text-muted-foreground">
                     Preview
@@ -366,6 +401,18 @@ export function PointsManager({
                       <div className="chakra-bold text-sm text-muted-foreground">
                         {selectedMemberPoints} points
                       </div>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "mt-2 w-fit",
+                          memberStatus === "active"
+                            ? "border-green-300 bg-green-50 text-green-700"
+                            : "border-red-300 bg-red-50 text-red-700",
+                        )}
+                      >
+                        {memberStatus.charAt(0).toUpperCase() +
+                          memberStatus.slice(1)}
+                      </Badge>
                     </div>
                   </div>
                 </div>

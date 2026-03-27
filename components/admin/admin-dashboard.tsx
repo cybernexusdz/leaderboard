@@ -127,10 +127,12 @@ export function AdminDashboard({
     memberId,
     name,
     image,
+    status,
   }: {
     memberId: string
     name: string
     image: string
+    status: "active" | "inactive"
   }) => {
     setFeedbackMessage(null)
     setFeedbackError(null)
@@ -140,6 +142,7 @@ export function AdminDashboard({
         memberId,
         name,
         image,
+        status,
       })
         .then(() => {
           setFeedbackMessage("Member details updated successfully.")

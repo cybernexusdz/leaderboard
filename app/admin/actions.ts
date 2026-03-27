@@ -13,6 +13,7 @@ type UpdateMemberProfileInput = {
   memberId: string
   name: string
   image: string
+  status: "active" | "inactive"
 }
 
 export async function applyPointsAdjustment({
@@ -57,6 +58,7 @@ export async function updateMemberProfile({
   memberId,
   name,
   image,
+  status,
 }: UpdateMemberProfileInput) {
   const trimmedName = name.trim()
   const trimmedImage = image.trim()
@@ -72,6 +74,7 @@ export async function updateMemberProfile({
     .update({
       display_name: trimmedName,
       avatar_url: trimmedImage || null,
+      is_active: status === "active",
     })
     .eq("id", memberId)
 
