@@ -41,6 +41,18 @@ function getPodiumDisplayOrder(users: LeaderboardUser[]) {
     .filter((user): user is LeaderboardUser => user !== undefined)
 }
 
+function getPodiumFrameSrc(rank: number) {
+  if (rank === 1) {
+    return "/1st-place-frame.png"
+  }
+
+  if (rank === 2) {
+    return "/2nd-place-frame.png"
+  }
+
+  return "/3rd-place-frame.png"
+}
+
 function getRankChange(previousRank?: number | null, currentRank?: number) {
   if (previousRank == null || currentRank == null) {
     return 0
@@ -358,18 +370,27 @@ function PodiumPlace({
         onClick={() => onSelect(user)}
         className="mb-1 flex flex-col items-center text-center"
       >
-        <UserAvatar
-          name={user.name}
-          avatarUrl={user.avatarUrl}
+        <div
           className={cn(
-            "mb-1 rounded-full border-2 border-gray-400 object-cover",
-            user.rank === 1
-              ? "h-20 w-20 border-yellow-500"
-              : user.rank === 2
-                ? "h-16 w-16 border-gray-400"
-                : "h-16 w-16 border-amber-700",
+            "relative mb-1 flex items-center justify-center",
+            user.rank === 1 ? "h-24 w-24" : "h-20 w-20",
           )}
-        />
+        >
+          <UserAvatar
+            name={user.name}
+            avatarUrl={user.avatarUrl}
+            className={cn(
+              "rounded-full object-cover",
+              user.rank === 1 ? "h-16 w-16" : "h-14 w-14",
+            )}
+          />
+          <img
+            src={getPodiumFrameSrc(user.rank)}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+          />
+        </div>
         <span className="text-lg font-medium leading-tight">{user.name}</span>
         <div className="flex items-center">
           <Star className="mr-1 size-5 fill-yellow-500 text-yellow-500" />
