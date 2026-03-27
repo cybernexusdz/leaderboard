@@ -231,7 +231,7 @@ export function RankingsList({
 
   return (
     <>
-      <div className="relative z-10 mb-2 flex w-full max-w-2xl items-end justify-center space-x-1 px-4 sm:space-x-4">
+      <div className="relative z-10 mb-2 flex w-full max-w-2xl items-end justify-center space-x-1 px-2 sm:px-0 sm:space-x-4">
         {orderedPodiumUsers.map((user) => (
           <PodiumPlace
             key={user.id}
