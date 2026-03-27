@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Star, X } from "lucide-react"
+import { Eye, Star, X } from "lucide-react"
 import { cn, formatHistoryDate } from "@/lib/utils"
 import type { AdminMember, AdminMemberHistoryEntry } from "@/lib/admin"
 
@@ -165,9 +165,10 @@ export function PointsManager({
                 <Button
                   type="button"
                   variant="outline"
+                  size="icon"
                   onClick={() => setIsModalOpen(true)}
                 >
-                  History
+                  <Eye className="size-6" />
                 </Button>
               </div>
               <Badge
