@@ -1,6 +1,10 @@
 import { AdminDashboard } from "@/components/admin/admin-dashboard"
 import { Card } from "@/components/ui/card"
-import { getAdminMemberHistory, getAdminMembers } from "@/lib/admin"
+import {
+  getAdminMemberHistory,
+  getAdminMembers,
+  getAdminReasonTemplates,
+} from "@/lib/admin"
 import { Suspense } from "react"
 
 export default function AdminPage() {
@@ -13,15 +17,17 @@ export default function AdminPage() {
 
 async function AdminPageContent() {
   try {
-    const [members, historyByMemberId] = await Promise.all([
+    const [members, historyByMemberId, reasonTemplates] = await Promise.all([
       getAdminMembers(),
       getAdminMemberHistory(),
+      getAdminReasonTemplates(),
     ])
 
     return (
       <AdminDashboard
         members={members}
         historyByMemberId={historyByMemberId}
+        reasonTemplates={reasonTemplates}
       />
     )
   } catch (error) {

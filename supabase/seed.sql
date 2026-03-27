@@ -379,3 +379,41 @@ values
     now() - interval '1 day'
   )
 on conflict (id) do nothing;
+
+insert into public.reason_templates (id, title, points_change, is_active)
+values
+  (
+    '99999999-0000-0000-0000-000000000001',
+    'Sprint delivery bonus',
+    100,
+    true
+  ),
+  (
+    '99999999-0000-0000-0000-000000000002',
+    'Helping teammate',
+    50,
+    true
+  ),
+  (
+    '99999999-0000-0000-0000-000000000003',
+    'Critical bug fix',
+    150,
+    true
+  ),
+  (
+    '99999999-0000-0000-0000-000000000004',
+    'Missed deadline penalty',
+    -50,
+    true
+  ),
+  (
+    '99999999-0000-0000-0000-000000000005',
+    'Documentation contribution',
+    25,
+    true
+  )
+on conflict (id) do update
+set
+  title = excluded.title,
+  points_change = excluded.points_change,
+  is_active = excluded.is_active;

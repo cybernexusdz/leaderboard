@@ -16,6 +16,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import type { AdminMember, AdminMemberHistoryMap } from "@/lib/admin"
+import type { AdminReasonTemplate } from "@/lib/admin"
 
 type PeriodFilter = "this_month" | "all_time"
 type StatusFilter = "all" | "active" | "inactive"
@@ -24,9 +25,11 @@ type SortDirection = "highest" | "lowest"
 export function AdminDashboard({
   members,
   historyByMemberId,
+  reasonTemplates,
 }: {
   members: AdminMember[]
   historyByMemberId: AdminMemberHistoryMap
+  reasonTemplates: AdminReasonTemplate[]
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -320,6 +323,7 @@ export function AdminDashboard({
             history={
               selectedMember ? (historyByMemberId[selectedMember.id] ?? []) : []
             }
+            reasonTemplates={reasonTemplates}
             isPending={isPending}
             feedbackMessage={feedbackMessage}
             feedbackError={feedbackError}

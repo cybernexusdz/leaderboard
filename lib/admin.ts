@@ -18,6 +18,13 @@ export type AdminMemberHistoryEntry = {
 
 export type AdminMemberHistoryMap = Record<string, AdminMemberHistoryEntry[]>
 
+export type AdminReasonTemplate = {
+  id: string
+  title: string
+  pointsChange: number
+  isActive: boolean
+}
+
 export async function requireAdmin() {
   const supabase = await createClient()
   const {
@@ -113,4 +120,24 @@ export async function getAdminMemberHistory(): Promise<AdminMemberHistoryMap> {
 
     return acc
   }, {})
+}
+
+export async function getAdminReasonTemplates(): Promise<AdminReasonTemplate[]> {
+  const { supabase } = await requireAdmin()
+
+  const { data, error } = await supabase
+    .from("reason_templates")
+    .select("id, title, points_change, is_active")
+    .order("title", { ascending: true })
+
+  if (error) {
+    throw error
+  }
+
+  return (data ?? []).map((template) => ({
+    id: template.id,
+    title: template.title,
+    pointsChange: template.points_change,
+    isActive: template.is_active,
+  }))
 }

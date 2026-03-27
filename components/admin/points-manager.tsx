@@ -8,7 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Eye, Star, X } from "lucide-react"
 import { cn, formatHistoryDate } from "@/lib/utils"
-import type { AdminMember, AdminMemberHistoryEntry } from "@/lib/admin"
+import type {
+  AdminMember,
+  AdminMemberHistoryEntry,
+  AdminReasonTemplate,
+} from "@/lib/admin"
 
 interface PointsManagerProps {
   selectedMember: AdminMember | null
@@ -16,6 +20,7 @@ interface PointsManagerProps {
   affectedCount: number
   periodFilter: "this_month" | "all_time"
   history: AdminMemberHistoryEntry[]
+  reasonTemplates: AdminReasonTemplate[]
   isPending: boolean
   feedbackMessage: string | null
   feedbackError: string | null
@@ -35,6 +40,7 @@ export function PointsManager({
   affectedCount,
   periodFilter,
   history,
+  reasonTemplates,
   isPending,
   feedbackMessage,
   feedbackError,
@@ -51,6 +57,10 @@ export function PointsManager({
   const [memberImage, setMemberImage] = useState("")
   const [memberStatus, setMemberStatus] = useState<"active" | "inactive">(
     "active",
+  )
+  const [templateSearch, setTemplateSearch] = useState("")
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null,
   )
 
   const hasSelection = selectedMember !== null || selectedCount > 0
@@ -71,6 +81,24 @@ export function PointsManager({
   }, [selectedMember])
 
   const historyPreview = useMemo(() => history.slice(0, 8), [history])
+  const activeReasonTemplates = useMemo(
+    () => reasonTemplates.filter((template) => template.isActive),
+    [reasonTemplates],
+  )
+  const filteredReasonTemplates = useMemo(() => {
+    const normalizedSearch = templateSearch.trim().toLowerCase()
+
+    if (!normalizedSearch) {
+      return activeReasonTemplates
+    }
+
+    return activeReasonTemplates.filter((template) =>
+      template.title.toLowerCase().includes(normalizedSearch),
+    )
+  }, [activeReasonTemplates, templateSearch])
+  const selectedTemplate =
+    activeReasonTemplates.find((template) => template.id === selectedTemplateId) ??
+    null
   const selectedMemberPoints = selectedMember
     ? periodFilter === "this_month"
       ? selectedMember.thisMonthPoints
@@ -126,6 +154,23 @@ export function PointsManager({
     onDeleteMember({ memberId: selectedMember.id })
     setIsDeleteConfirmOpen(false)
     setIsModalOpen(false)
+  }
+
+  const handleUseTemplate = (template: AdminReasonTemplate) => {
+    setSelectedTemplateId(template.id)
+    setTemplateSearch(template.title)
+    setActivity(template.title)
+    setPointsInput(String(template.pointsChange))
+  }
+
+  const handleOpenTemplateConfirmation = () => {
+    if (!selectedTemplate || affectedCount === 0) {
+      return
+    }
+
+    setActivity(selectedTemplate.title)
+    setPointsInput(String(selectedTemplate.pointsChange))
+    setIsConfirmOpen(true)
   }
 
   return (
@@ -192,62 +237,131 @@ export function PointsManager({
       </Card>
 
       {hasSelection ? (
-        <Card className="space-y-4 p-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="reason-input" className="text-sm font-medium">
-              Adjustment reason
-            </Label>
-            <Input
-              id="reason-input"
-              type="text"
-              placeholder="Enter reason for points adjustment"
-              value={activity}
-              onChange={(event) => setActivity(event.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="points-input" className="text-sm font-medium">
-              Points change
-            </Label>
-            <div className="flex gap-2">
+        <>
+          <Card className="mt-4 space-y-4 p-4">
+            <div className="space-y-2">
+              <Label htmlFor="template-search" className="text-sm font-medium">
+                Reason template
+              </Label>
               <Input
-                id="points-input"
-                type="number"
-                placeholder="Use positive or negative values"
-                value={pointsInput}
-                onChange={(event) => setPointsInput(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    handleOpenConfirmation()
-                  }
+                id="template-search"
+                type="text"
+                placeholder="Search predefined reasons..."
+                value={templateSearch}
+                onChange={(event) => {
+                  setTemplateSearch(event.target.value)
+                  setSelectedTemplateId(null)
                 }}
-                className="flex-1"
               />
-              <Button
-                onClick={handleOpenConfirmation}
-                disabled={
-                  isPending ||
-                  !activity.trim() ||
-                  !pointsInput ||
-                  Number(pointsInput) === 0 ||
-                  affectedCount === 0
-                }
-                className="px-4"
-              >
-                Review
-              </Button>
             </div>
-          </div>
 
-          {feedbackMessage ? (
-            <p className="text-sm text-green-700">{feedbackMessage}</p>
-          ) : null}
+            <div className="max-h-48 space-y-2 overflow-y-auto rounded-xl border border-border p-2">
+              {filteredReasonTemplates.length === 0 ? (
+                <p className="px-2 py-3 text-sm text-muted-foreground">
+                  No templates match your search.
+                </p>
+              ) : (
+                filteredReasonTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => handleUseTemplate(template)}
+                    className={cn(
+                      "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                      selectedTemplateId === template.id
+                        ? "bg-foreground text-background"
+                        : "hover:bg-muted",
+                    )}
+                  >
+                    <span className="font-medium">{template.title}</span>
+                    <span className="chakra-bold opacity-75">
+                      {template.pointsChange > 0 ? "+" : ""}
+                      {template.pointsChange}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
 
-          {feedbackError ? (
-            <p className="text-sm text-red-700">{feedbackError}</p>
-          ) : null}
-        </Card>
+            {selectedTemplate ? (
+              <div className="rounded-xl border border-border bg-muted/20 p-3">
+                <p className="text-sm font-medium text-foreground">
+                  {selectedTemplate.title}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Points: {selectedTemplate.pointsChange > 0 ? "+" : ""}
+                  {selectedTemplate.pointsChange}
+                </p>
+              </div>
+            ) : null}
+
+            <Button
+              type="button"
+              onClick={handleOpenTemplateConfirmation}
+              disabled={isPending || !selectedTemplate || affectedCount === 0}
+              className="w-full"
+            >
+            Submit
+            </Button>
+          </Card>
+
+          <Card className="mt-4 space-y-4 p-4">
+            <div className="space-y-2">
+              <Label htmlFor="reason-input" className="text-sm font-medium">
+                Adjustment reason
+              </Label>
+              <Input
+                id="reason-input"
+                type="text"
+                placeholder="Enter reason for points adjustment"
+                value={activity}
+                onChange={(event) => setActivity(event.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="points-input" className="text-sm font-medium">
+                Points change
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="points-input"
+                  type="number"
+                  placeholder="Use positive or negative values"
+                  value={pointsInput}
+                  onChange={(event) => setPointsInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handleOpenConfirmation()
+                    }
+                  }}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={handleOpenConfirmation}
+                  disabled={
+                    isPending ||
+                    !activity.trim() ||
+                    !pointsInput ||
+                    Number(pointsInput) === 0 ||
+                    affectedCount === 0
+                  }
+                  className="px-4"
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+
+            {feedbackMessage ? (
+              <p className="text-sm text-green-700">{feedbackMessage}</p>
+            ) : null}
+
+            {feedbackError ? (
+              <p className="text-sm text-red-700">{feedbackError}</p>
+            ) : null}
+          </Card>
+        </>
       ) : null}
 
       {isConfirmOpen ? (
