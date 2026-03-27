@@ -12,14 +12,18 @@ import { useState } from "react"
 const FALLBACK_AVATAR = "/unnamed.png"
 
 type RankingsListProps = {
-  podiumUsers: LeaderboardUser[]
-  rankingUsers: LeaderboardUser[]
-  historyByUserId: LeaderboardHistoryMap
+  podiumUsers?: LeaderboardUser[]
+  rankingUsers?: LeaderboardUser[]
+  historyByUserId?: LeaderboardHistoryMap
   isLoading?: boolean
   error?: string | null
   onRetry?: () => void
   onSelectUser?: (user: LeaderboardUser) => void
 }
+
+const defaultPodiumUsers: LeaderboardUser[] = []
+const defaultRankingUsers: LeaderboardUser[] = []
+const defaultHistoryByUserId: LeaderboardHistoryMap = {}
 
 function formatRank(rank: number) {
   return rank.toString().padStart(2, "0")
@@ -193,9 +197,9 @@ function LeaderboardEmptyState() {
 }
 
 export function RankingsList({
-  podiumUsers,
-  rankingUsers,
-  historyByUserId,
+  podiumUsers = defaultPodiumUsers,
+  rankingUsers = defaultRankingUsers,
+  historyByUserId = defaultHistoryByUserId,
   isLoading = false,
   error = null,
   onRetry,
