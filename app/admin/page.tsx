@@ -1,36 +1,63 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
-import { InfoIcon } from "lucide-react"
+import { AdminDashboard } from "@/components/admin/admin-dashboard"
+import { Card } from "@/components/ui/card"
+import { getAdminMemberHistory, getAdminMembers } from "@/lib/admin"
 import { Suspense } from "react"
 
-async function UserDetails() {
-  const supabase = await createClient()
-  const { data, error } = await supabase.auth.getClaims()
-
-  if (error || !data?.claims) {
-    redirect("/auth/login")
-  }
-
-  return JSON.stringify(data.claims, null, 2)
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<AdminPageSkeleton />}>
+      <AdminPageContent />
+    </Suspense>
+  )
 }
 
-export default function ProtectedPage() {
-  return (
-    <div className="flex-1 w-full flex flex-col gap-12">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
-        </div>
+async function AdminPageContent() {
+  try {
+    const [members, historyByMemberId] = await Promise.all([
+      getAdminMembers(),
+      getAdminMemberHistory(),
+    ])
+
+    return (
+      <AdminDashboard
+        members={members}
+        historyByMemberId={historyByMemberId}
+      />
+    )
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Unable to load the admin dashboard."
+        
+    console.error("Error loading admin members:", error) 
+    return (
+      <div className="w-full max-w-3xl px-4 py-10">
+        <Card className="border-red-200 bg-red-50 p-6">
+          <h1 className="text-xl font-semibold text-red-800">
+            Admin dashboard unavailable
+          </h1>
+          <p className="mt-2 text-sm text-red-700">{message}</p>
+        </Card>
       </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          <Suspense>
-            <UserDetails />
-          </Suspense>
-        </pre>
+    )
+  }
+}
+
+function AdminPageSkeleton() {
+  return (
+    <div className="w-full max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+      <Card className="p-6">
+        <div className="h-10 animate-pulse rounded bg-muted" />
+      </Card>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-2">
+          <div className="h-[640px] animate-pulse rounded bg-muted" />
+        </Card>
+        <Card className="p-6">
+          <div className="h-[320px] animate-pulse rounded bg-muted" />
+        </Card>
       </div>
     </div>
   )
