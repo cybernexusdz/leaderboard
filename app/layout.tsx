@@ -11,8 +11,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "App",
-  description: "Next.js and Supabase Starter Kit",
+  title: "Leaderboard",
+  description: "A dynamic leaderboard that highlights our club's top contributors, motivating everyone to strive for excellence.",
 }
 
 const inter = Inter({ subsets: ["latin"] })
@@ -32,6 +32,7 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
+          forcedTheme="light"
           enableSystem
           disableTransitionOnChange
         >

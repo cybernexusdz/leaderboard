@@ -1,5 +1,10 @@
 import { AuthButton } from "@/components/auth/auth-button"
+import { Metadata } from "next"
 import { Suspense } from "react"
+
+export const metadata: Metadata = { 
+  title: "Leaderboard | Admin",
+}
 
 export default function AdminLayout({
   children,
