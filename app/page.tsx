@@ -4,6 +4,7 @@ import {
   isLeaderboardPeriod,
   type LeaderboardPeriod,
 } from "@/lib/leaderboard"
+import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { Suspense } from "react"
@@ -84,7 +85,7 @@ function LeaderboardHeader({
         <h1 className="chakra-bold text-center text-4xl font-bold uppercase sm:text-6xl">
           Leaderboard
         </h1>
-        <div className="inline-flex space-x-1 rounded-full bg-gray-200 p-1">
+        <div className="inline-flex space-x-1 rounded-full bg-muted p-1 border border-muted-foreground/10">
           <PeriodLink
             period="this_month"
             currentPeriod={currentPeriod}
@@ -124,11 +125,8 @@ function PeriodLink({
   return (
     <Link
       href={`/?period=${period}`}
-      className={
-        isActive
-          ? "rounded-full bg-black px-6 py-2 text-sm font-medium text-white shadow"
-          : "rounded-full px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-300"
-      }
+      className={cn("rounded-full px-6 py-2 text-sm font-medium", 
+        isActive ? "bg-primary text-muted shadow-sm" : "text-muted-foreground transition-colors hover:text-foreground")} 
     >
       {label}
     </Link>
