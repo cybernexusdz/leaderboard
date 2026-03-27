@@ -26,6 +26,7 @@ interface PointsManagerProps {
     image: string
     status: "active" | "inactive"
   }) => void
+  onDeleteMember: (input: { memberId: string }) => void
 }
 
 export function PointsManager({
@@ -39,11 +40,13 @@ export function PointsManager({
   feedbackError,
   onApply,
   onUpdateMemberProfile,
+  onDeleteMember,
 }: PointsManagerProps) {
   const [activity, setActivity] = useState("")
   const [pointsInput, setPointsInput] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
   const [memberName, setMemberName] = useState("")
   const [memberImage, setMemberImage] = useState("")
   const [memberStatus, setMemberStatus] = useState<"active" | "inactive">(
@@ -55,6 +58,7 @@ export function PointsManager({
   useEffect(() => {
     if (!selectedMember) {
       setIsModalOpen(false)
+      setIsDeleteConfirmOpen(false)
       setMemberName("")
       setMemberImage("")
       setMemberStatus("active")
@@ -112,6 +116,16 @@ export function PointsManager({
       image: memberImage,
       status: memberStatus,
     })
+  }
+
+  const handleDeleteMember = () => {
+    if (!selectedMember) {
+      return
+    }
+
+    onDeleteMember({ memberId: selectedMember.id })
+    setIsDeleteConfirmOpen(false)
+    setIsModalOpen(false)
   }
 
   return (
@@ -417,14 +431,26 @@ export function PointsManager({
                   </div>
                 </div>
 
-                <Button
-                  type="button"
-                  onClick={handleSaveProfile}
-                  disabled={isPending || !memberName.trim()}
-                  className="w-full"
-                >
-                  {isPending ? "Saving..." : "Save member details"}
-                </Button>
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    onClick={handleSaveProfile}
+                    disabled={isPending || !memberName.trim()}
+                    className="w-full"
+                  >
+                    {isPending ? "Saving..." : "Save member details"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => setIsDeleteConfirmOpen(true)}
+                    disabled={isPending}
+                    className="w-full"
+                  >
+                    Delete member
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -471,6 +497,56 @@ export function PointsManager({
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {selectedMember && isDeleteConfirmOpen ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Delete member
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  This will permanently remove {selectedMember.name} and all
+                  related point history.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                aria-label="Close delete confirmation"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              This action cannot be undone.
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteMember}
+                disabled={isPending}
+              >
+                {isPending ? "Deleting..." : "Delete member"}
+              </Button>
             </div>
           </div>
         </div>

@@ -16,6 +16,16 @@ type UpdateMemberProfileInput = {
   status: "active" | "inactive"
 }
 
+type CreateMemberInput = {
+  name: string
+  image: string
+  status: "active" | "inactive"
+}
+
+type DeleteMemberInput = {
+  memberId: string
+}
+
 export async function applyPointsAdjustment({
   activity,
   memberIds,
@@ -77,6 +87,47 @@ export async function updateMemberProfile({
       is_active: status === "active",
     })
     .eq("id", memberId)
+
+  if (error) {
+    throw error
+  }
+
+  revalidatePath("/")
+  revalidatePath("/admin")
+}
+
+export async function createMember({
+  name,
+  image,
+  status,
+}: CreateMemberInput) {
+  const trimmedName = name.trim()
+  const trimmedImage = image.trim()
+
+  if (!trimmedName) {
+    throw new Error("Member name is required.")
+  }
+
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase.from("members").insert({
+    display_name: trimmedName,
+    avatar_url: trimmedImage || null,
+    is_active: status === "active",
+  })
+
+  if (error) {
+    throw error
+  }
+
+  revalidatePath("/")
+  revalidatePath("/admin")
+}
+
+export async function deleteMember({ memberId }: DeleteMemberInput) {
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase.from("members").delete().eq("id", memberId)
 
   if (error) {
     throw error
