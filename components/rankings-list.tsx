@@ -5,7 +5,7 @@ import type {
   LeaderboardUser,
   PointsHistoryEntry,
 } from "@/lib/leaderboard"
-import { cn } from "@/lib/utils"
+import { cn, formatHistoryDate } from "@/lib/utils"
 import { ArrowDownCircleIcon, ArrowUpCircleIcon, Star, X } from "lucide-react"
 import { useState } from "react"
 
@@ -164,7 +164,7 @@ function getRankChange(previousRank?: number | null, currentRank?: number) {
 
   return previousRank - currentRank
 }
-
+ 
 function TrendIndicator({
   previousRank,
   currentRank,
@@ -235,7 +235,7 @@ function RankingsListItem({
       </div>
 
       <div className="flex items-center">
-        <Star className="mr-1 size-5 text-yellow-500" />
+        <Star className="mr-1 size-5 fill-yellow-500 text-yellow-500" />
         <span className="chakra-bold pr-2 text-base font-bold sm:text-lg">
           {user.points}
         </span>
@@ -438,7 +438,7 @@ function PointsHistoryModal({
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">{entry.activity}</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      {entry.date}
+                      {formatHistoryDate(entry.date)}
                     </p>
                   </div>
                   <div
@@ -487,9 +487,9 @@ function PodiumPlace({
           )}
         />
         <span className="text-lg font-medium leading-tight">{user.name}</span>
-        <div className="flex items-center text-gray-700">
-          <Star className="mr-1 size-5 text-yellow-500" />
-          <span className="chakra-bold font-bold text-black">{user.points}</span>
+        <div className="flex items-center">
+          <Star className="mr-1 size-5 fill-yellow-500 text-yellow-500" />
+          <span className="chakra-bold font-bold">{user.points}</span>
         </div>
       </button>
       <div
