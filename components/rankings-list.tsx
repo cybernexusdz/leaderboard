@@ -12,133 +12,13 @@ import { useState } from "react"
 const FALLBACK_AVATAR = "/unnamed.png"
 
 type RankingsListProps = {
-  podiumUsers?: LeaderboardUser[]
-  rankingUsers?: LeaderboardUser[]
-  historyByUserId?: LeaderboardHistoryMap
+  podiumUsers: LeaderboardUser[]
+  rankingUsers: LeaderboardUser[]
+  historyByUserId: LeaderboardHistoryMap
   isLoading?: boolean
   error?: string | null
   onRetry?: () => void
   onSelectUser?: (user: LeaderboardUser) => void
-}
-
-const defaultPodiumUsers: LeaderboardUser[] = [
-  {
-    id: "user-2",
-    rank: 2,
-    previousRank: 3,
-    name: "Hammond",
-    points: 8632,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAjSE4xePqSXx--4DAxrQyTIihXuNshpTt3rFRFI-73uhYG8BrHWZ_76eQrLhIcfrBEv4eA9BzormcXRGb4ysyrI96Hy4lmbVp0RXpVQ7WhwNrk07qdDtQHvR70By4YWx-tCCJRu-2yzslRDaKIhLkCGxQ_QbteUgCB1GC_0QxqW58ID5tcMEiOZJLklU2GW2tAp2jyVH2iyGQlw7vJNiIj8K9ZjlQDill6enHIXG41jowbEcmUl1g3dOCTAqVujIV4YmhPCe-X5ks",
-  },
-  {
-    id: "user-1",
-    rank: 1,
-    previousRank: 1,
-    name: "Johnny Rios",
-    points: 9654,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBYDmxUgBTbd7JW9yDrHwmXL0A0udnJ9LoHQrE092EOO15iby1eIO20xdRdbDybIrDUFat0C4yCcbmgVmMfxuAHjqaL95-RLfUkmv5Ojxw0ieoml3QDRsvoAE_EpFyS2p4t8Dy_emckQA118sARLgLDHBupzPn-80AA2COkxjt4R5o9VW7CejedqGGyXBzo-V4vu3TmyyM7FRbAF9UoEj3O1oNv6db_79wZVI1WWLLlGkoyvkaFF2WIXvbCBundIxtGNWuvQ85ycK4",
-  },
-  {
-    id: "user-3",
-    rank: 3,
-    previousRank: 2,
-    name: "Hodges",
-    points: 6878,
-    avatarUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCTyCEBD4HC4yMD-2w6i6Ggh8KAHy230en6e-5HmyhvgnH0a0mk12wFagxW0YF0uZhfzsvyhnU0Sm3D-O1WejG3JxfPkJ0-IHPSgTvAfQL209M7ILT3ng4aHm4SMb-YCzBX95378KXoCakKikIYWg5UKRES5CSvm1djtfAiIRUqXlJPse7CcfuKy94QTZciFQEClsVJ4lQ8VyTYL4sHzx3HzltpsAjoPVngC2euVHh7rL6r2mRuP284h1cLm2ykOuSCUQYKPkEo48Q",
-  },
-]
-
-const defaultRankingUsers: LeaderboardUser[] = [
-  {
-    id: "user-4",
-    rank: 4,
-    previousRank: 3,
-    name: "Dora Hines",
-    points: 6432,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
-  },
-  {
-    id: "user-5",
-    rank: 5,
-    previousRank: 7,
-    name: "Carolyn Francis",
-    points: 5232,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-  },
-  {
-    id: "user-6",
-    rank: 6,
-    previousRank: 8,
-    name: "Isaiah McGee",
-    points: 5200,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
-  },
-  {
-    id: "user-7",
-    rank: 7,
-    previousRank: 5,
-    name: "Mark Holmes",
-    points: 4997,
-    avatarUrl:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop",
-  },
-  {
-    id: "user-8",
-    rank: 8,
-    previousRank: 8,
-    name: "Georgie Clayton",
-    points: 3200,
-    avatarUrl: FALLBACK_AVATAR,
-  },
-]
-
-const defaultHistoryByUserId: LeaderboardHistoryMap = {
-  "user-1": [
-    {
-      id: "history-1",
-      date: "2026-03-20",
-      activity: "Completed task: Website redesign",
-      pointsChange: 500,
-    },
-    {
-      id: "history-2",
-      date: "2026-03-18",
-      activity: "Code review contribution",
-      pointsChange: 250,
-    },
-    {
-      id: "history-3",
-      date: "2026-03-15",
-      activity: "Bug fix: Critical issue resolved",
-      pointsChange: 300,
-    },
-  ],
-  "user-4": [
-    {
-      id: "history-4",
-      date: "2026-03-12",
-      activity: "Documentation update",
-      pointsChange: 100,
-    },
-    {
-      id: "history-5",
-      date: "2026-03-10",
-      activity: "Team presentation",
-      pointsChange: 200,
-    },
-    {
-      id: "history-6",
-      date: "2026-03-05",
-      activity: "Missed deadline penalty",
-      pointsChange: -50,
-    },
-  ],
 }
 
 function formatRank(rank: number) {
@@ -313,9 +193,9 @@ function LeaderboardEmptyState() {
 }
 
 export function RankingsList({
-  podiumUsers = defaultPodiumUsers,
-  rankingUsers = defaultRankingUsers,
-  historyByUserId = defaultHistoryByUserId,
+  podiumUsers,
+  rankingUsers,
+  historyByUserId,
   isLoading = false,
   error = null,
   onRetry,
