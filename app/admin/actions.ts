@@ -64,6 +64,15 @@ export async function applyPointsAdjustment({
 
   const { supabase, userId } = await requireAdmin()
 
+  const { error: snapshotError } = await supabase.rpc(
+    "capture_member_snapshots",
+    { member_ids: memberIds },
+  )
+
+  if (snapshotError) {
+    throw snapshotError
+  }
+
   const { error } = await supabase.from("point_events").insert(
     memberIds.map((memberId) => ({
       member_id: memberId,
