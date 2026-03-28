@@ -20,6 +20,7 @@ async function AdminUsersPageContent() {
     const message =
       error instanceof Error ? error.message : "Unable to load users."
 
+     console.log(error); 
     return (
       <div className="w-full max-w-3xl px-4 py-10">
         <Card className="border-red-200 bg-red-50 p-6">
