@@ -11,14 +11,14 @@ insert into
 values
   (
     '11111111-1111-1111-1111-111111111111',
-    'MrAhmed',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Sofiane Dex',
+    'https://cybernexusdz.vercel.app/images/team/sofiane-image-front.jpg',
     true
   ),
   (
     '22222222-2222-2222-2222-222222222222',
-    'Salma',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Aziz Ben',
+    'https://avatars.githubusercontent.com/u/204910182?v=4',
     true
   ),
   (
@@ -29,50 +29,50 @@ values
   ),
   (
     '44444444-4444-4444-4444-444444444444',
-    'Adam Rhmni',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Samira Mostefaoui',
+    'https://cybernexusdz.vercel.app/images/team/samira-image-front.JPG',
     true
   ),
   (
     '55555555-5555-5555-5555-555555555555',
     'Mendjour Lounis',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/lounis-image-front.png',
     true
   ),
   (
     '66666666-6666-6666-6666-666666666666',
     'Norddine',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/noureddine-image-front.jpg',
     true
   ),
   (
     '77777777-7777-7777-7777-777777777777',
     'Hafid',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/hafid-image-front.png',
     true
   ),
   (
     '88888888-8888-8888-8888-888888888888',
     'Nadji Mechta',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/nadji-image-front.png',
     true
   ),
   (
     '99999999-9999-9999-9999-999999999999',
-    'Mouhamed',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Bachir',
+    'https://cybernexusdz.vercel.app/images/team/bachir-iamge-front.jpg',
     true
   ),
   (
     'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
     'Fatah',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/fatah-image-front.png',
     true
   ),
   (
     'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
     'Amine',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/amine-image-front.jpg',
     true
   ),
   (
@@ -84,7 +84,7 @@ values
   (
     'dddddddd-dddd-dddd-dddd-dddddddddddd',
     'Mohamed Reggad',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/reggad-image-front.png',
     true
   ),
   (
@@ -102,121 +102,121 @@ values
   (
     '12121212-1212-1212-1212-121212121212',
     'Samadoo',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/tounssi-image-front.jpg',
     true
   ),
   (
     '13131313-1313-1313-1313-131313131313',
     'Ahlem Moussa',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/ahlem-image-front.png',
     true
   ),
   (
     '14141414-1414-1414-1414-141414141414',
-    'Samira Mostefaoui',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Adam Rhmni',
+    'https://cybernexusdz.vercel.app/images/team/adam-image-front.jpg',
     true
   ),
   (
     '15151515-1515-1515-1515-151515151515',
     'Farah',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/farah-image-front.png',
     true
   ),
   (
     '16161616-1616-1616-1616-161616161616',
     'Kawther Hadjadj',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/kawther-image-front.jpg',
     true
   ),
   (
     '17171717-1717-1717-1717-171717171717',
     'Achraf Riadh',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/riad-image-front.png',
     true
   ),
   (
     '18181818-1818-1818-1818-181818181818',
     'повар',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/mlsvmdl-image-front.jpg',
     true
   ),
   (
     '19191919-1919-1919-1919-191919191919',
     'Rafika Rohdea',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/rafika-image-front.png',
     true
   ),
   (
     '20202020-2020-2020-2020-202020202020',
     'Abderrhmane',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/abdo-image-front.png',
     true
   ),
   (
     '21212121-2121-2121-2121-212121212121',
     'Rania Manel',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/rania-image-front.png',
     true
   ),
   (
     'a1b2c3d4-e5f6-4a7b-8c9d-e0f1a2b3c4d5',
-    'Abd al-Jabbar',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Abd Al-Jabbar',
+    'https://cybernexusdz.vercel.app/images/team/joseph-image-front.jpg',
     true
   ),
   (
     '23232323-2323-2323-2323-232323232323',
     'Kamel',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/kamel-image-front.png',
     true
   ),
   (
     '24242424-2424-2424-2424-242424242424',
     'Hakim',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/hakim-image-front.jpg',
     true
   ),
   (
     '25252525-2525-2525-2525-252525252525',
     'Catrina',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/sabrine-image-front.png',
     true
   ),
   (
     '26262626-2626-2626-2626-262626262626',
-    'Aziz Ben',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Salma',
+    'https://cybernexusdz.vercel.app/images/team/selma-image-front.jpg',
     true
   ),
   (
     '27272727-2727-2727-2727-272727272727',
-    'Sofiane Dex',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'MrAhmed',
+    'https://cybernexusdz.vercel.app/images/team/chikhaoui-image-front.png',
     true
   ),
   (
     '28282828-2828-2828-2828-282828282828',
     'Soltana',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/soltana-iamge-front.png',
     true
   ),
   (
     '29292929-2929-2929-2929-292929292929',
     'Aya',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/aya-image-front.png',
     true
   ),
   (
     '30303030-3030-3030-3030-303030303030',
-    'Bedoui Denia',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'Wissam',
+    'https://cybernexusdz.vercel.app/images/team/wissam-image-front.png',
     true
   ),
   (
     '31313131-3131-3131-3131-313131313131',
     'Hadi Adda',
-    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    'https://cybernexusdz.vercel.app/images/team/adda-image-front.jpg',
     true
   )
 on conflict (id) do update
