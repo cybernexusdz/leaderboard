@@ -655,18 +655,21 @@ export function PointsManager({
                               </p>
                             ) : null}
                           </div>
-                          <div className="flex items-start gap-2">
-                            <span
-                              className={cn(
-                                "chakra-bold font-semibold",
-                                entry.pointsChange >= 0
-                                  ? "text-green-600"
-                                  : "text-red-600",
-                              )}
-                            >
-                              {entry.pointsChange > 0 ? "+" : ""}
-                              {entry.pointsChange}
-                            </span>
+
+                          <div className="flex flex-col items-center justify-center gap-4">
+                            <div className="flex items-start gap-2">
+                              <span
+                                className={cn(
+                                  "chakra-bold font-semibold",
+                                  entry.pointsChange >= 0
+                                    ? "text-green-600"
+                                    : "text-red-600",
+                                )}
+                              >
+                                {entry.pointsChange > 0 ? "+" : ""}
+                                {entry.pointsChange}
+                              </span>
+                            </div>
                             {canDeletePointHistory ? (
                               <Button
                                 type="button"
