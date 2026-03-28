@@ -22,10 +22,12 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null)
   const [feedbackError, setFeedbackError] = useState<string | null>(null)
   const [newEmail, setNewEmail] = useState("")
+  const [newDisplayName, setNewDisplayName] = useState("")
   const [newPassword, setNewPassword] = useState("")
   const [newRole, setNewRole] = useState<AuthUserRole>("registered")
   const [editingUser, setEditingUser] = useState<AdminAuthUser | null>(null)
   const [editEmail, setEditEmail] = useState("")
+  const [editDisplayName, setEditDisplayName] = useState("")
   const [editPassword, setEditPassword] = useState("")
   const [editRole, setEditRole] = useState<AuthUserRole>("registered")
   const [deletingUser, setDeletingUser] = useState<AdminAuthUser | null>(null)
@@ -38,12 +40,16 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
     }
 
     return users.filter((user) =>
-      [user.email ?? "", roleLabel(user.role)].join(" ").toLowerCase().includes(normalizedSearch),
+      [user.displayName ?? "", user.email ?? "", roleLabel(user.role)]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedSearch),
     )
   }, [searchTerm, users])
 
   const resetCreateForm = () => {
     setNewEmail("")
+    setNewDisplayName("")
     setNewPassword("")
     setNewRole("registered")
   }
@@ -55,6 +61,7 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
     startTransition(() => {
       void createAuthUser({
         email: newEmail,
+        displayName: newDisplayName,
         password: newPassword,
         role: newRole,
       })
@@ -74,6 +81,7 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
   const openEditModal = (user: AdminAuthUser) => {
     setEditingUser(user)
     setEditEmail(user.email ?? "")
+    setEditDisplayName(user.displayName ?? "")
     setEditPassword("")
     setEditRole(user.role)
   }
@@ -90,6 +98,7 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
       void updateAuthUser({
         userId: editingUser.id,
         email: editEmail,
+        displayName: editDisplayName,
         password: editPassword,
         role: editRole,
       })
@@ -133,7 +142,16 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
   return (
     <div className="w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Card className="mb-6 space-y-4 p-6">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)]">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,280px)]">
+          <div className="space-y-2">
+            <Label htmlFor="auth-user-display-name">Display name</Label>
+            <Input
+              id="auth-user-display-name"
+              placeholder="Yassine"
+              value={newDisplayName}
+              onChange={(event) => setNewDisplayName(event.target.value)}
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="auth-user-email">Email</Label>
             <Input
@@ -163,7 +181,11 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
             className="w-full lg:w-fit"
             onClick={handleCreateUser}
             disabled={
-              isPending || !newEmail.trim() || !newPassword.trim() || newPassword.trim().length < 6
+              isPending ||
+              !newDisplayName.trim() ||
+              !newEmail.trim() ||
+              !newPassword.trim() ||
+              newPassword.trim().length < 6
             }
           >
             {isPending ? "Creating..." : "Create auth user"}
@@ -184,7 +206,7 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
           <Label htmlFor="auth-users-search">Search auth users</Label>
           <Input
             id="auth-users-search"
-            placeholder="Search by email or role..."
+            placeholder="Search by name, email, or role..."
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
           />
@@ -204,8 +226,14 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-3">
                     <p className="font-medium text-foreground">
-                      {user.email ?? "No email"}
+                      {user.displayName ?? "No display name"}
                     </p>
+                    <Badge
+                      variant="outline"
+                      className="border-border bg-background text-foreground"
+                    >
+                      {user.email ?? "No email"}
+                    </Badge>
                     <Badge
                       variant="outline"
                       className={cn(roleBadgeClasses[user.role])}
@@ -257,6 +285,15 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
 
             <div className="mt-6 space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="edit-auth-display-name">Display name</Label>
+                <Input
+                  id="edit-auth-display-name"
+                  value={editDisplayName}
+                  onChange={(event) => setEditDisplayName(event.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="edit-auth-email">Email</Label>
                 <Input
                   id="edit-auth-email"
@@ -287,7 +324,12 @@ export function AuthUsersManager({ users }: { users: AdminAuthUser[] }) {
               <Button
                 type="button"
                 onClick={handleUpdateUser}
-                disabled={isPending || !editEmail.trim() || (editPassword ? editPassword.length < 6 : false)}
+                disabled={
+                  isPending ||
+                  !editDisplayName.trim() ||
+                  !editEmail.trim() ||
+                  (editPassword ? editPassword.length < 6 : false)
+                }
               >
                 {isPending ? "Saving..." : "Save changes"}
               </Button>

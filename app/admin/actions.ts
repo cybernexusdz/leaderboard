@@ -46,6 +46,7 @@ type DeleteReasonTemplateInput = {
 
 type CreateAuthUserInput = {
   email: string
+  displayName: string
   password: string
   role: "registered" | "admin" | "super_admin"
 }
@@ -53,6 +54,7 @@ type CreateAuthUserInput = {
 type UpdateAuthUserInput = {
   userId: string
   email: string
+  displayName: string
   password?: string
   role: "registered" | "admin" | "super_admin"
 }
@@ -515,16 +517,22 @@ export async function deleteReasonTemplate({
 
 export async function createAuthUser({
   email,
+  displayName,
   password,
   role,
 }: CreateAuthUserInput) {
   const admin = await requireSuperAdmin()
   const authAdmin = createAdminClient()
   const normalizedEmail = email.trim().toLowerCase()
+  const trimmedDisplayName = displayName.trim()
   const trimmedPassword = password.trim()
 
   if (!normalizedEmail) {
     throw new Error("Email is required.")
+  }
+
+  if (!trimmedDisplayName) {
+    throw new Error("Display name is required.")
   }
 
   if (trimmedPassword.length < 6) {
@@ -535,6 +543,9 @@ export async function createAuthUser({
     email: normalizedEmail,
     password: trimmedPassword,
     email_confirm: true,
+    user_metadata: {
+      display_name: trimmedDisplayName,
+    },
   })
 
   if (error) {
@@ -562,9 +573,10 @@ export async function createAuthUser({
         actionType: "auth_user_created",
         entityType: "auth_user",
         entityId: data.user.id,
-        entityLabel: normalizedEmail,
+        entityLabel: trimmedDisplayName,
         details: {
           email: normalizedEmail,
+          displayName: trimmedDisplayName,
           role,
         },
       },
@@ -579,16 +591,22 @@ export async function createAuthUser({
 export async function updateAuthUser({
   userId,
   email,
+  displayName,
   password,
   role,
 }: UpdateAuthUserInput) {
   const admin = await requireSuperAdmin()
   const authAdmin = createAdminClient()
   const normalizedEmail = email.trim().toLowerCase()
+  const trimmedDisplayName = displayName.trim()
   const trimmedPassword = password?.trim() ?? ""
 
   if (!normalizedEmail) {
     throw new Error("Email is required.")
+  }
+
+  if (!trimmedDisplayName) {
+    throw new Error("Display name is required.")
   }
 
   if (trimmedPassword && trimmedPassword.length < 6) {
@@ -620,6 +638,10 @@ export async function updateAuthUser({
 
   const { error: updateError } = await authAdmin.auth.admin.updateUserById(userId, {
     email: normalizedEmail,
+    user_metadata: {
+      ...(existingUser.user_metadata ?? {}),
+      display_name: trimmedDisplayName,
+    },
     ...(trimmedPassword ? { password: trimmedPassword } : {}),
   })
 
@@ -653,14 +675,19 @@ export async function updateAuthUser({
         actionType: "auth_user_updated",
         entityType: "auth_user",
         entityId: userId,
-        entityLabel: normalizedEmail,
+        entityLabel: trimmedDisplayName,
         details: {
           before: {
             email: existingUser.email ?? null,
+            displayName:
+              typeof existingUser.user_metadata?.display_name === "string"
+                ? existingUser.user_metadata.display_name
+                : null,
             role: existingAdminRole?.role ?? "registered",
           },
           after: {
             email: normalizedEmail,
+            displayName: trimmedDisplayName,
             role,
             passwordUpdated: Boolean(trimmedPassword),
           },
@@ -713,9 +740,16 @@ export async function deleteAuthUser({ userId }: DeleteAuthUserInput) {
         actionType: "auth_user_deleted",
         entityType: "auth_user",
         entityId: userId,
-        entityLabel: existingUser.email ?? userId,
+        entityLabel:
+          typeof existingUser.user_metadata?.display_name === "string"
+            ? existingUser.user_metadata.display_name
+            : existingUser.email ?? userId,
         details: {
           email: existingUser.email ?? null,
+          displayName:
+            typeof existingUser.user_metadata?.display_name === "string"
+              ? existingUser.user_metadata.display_name
+              : null,
           role: existingAdminRole?.role ?? "registered",
         },
       },

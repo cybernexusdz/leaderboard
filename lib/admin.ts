@@ -44,6 +44,7 @@ export type AdminAuditLog = {
 export type AdminAuthUser = {
   id: string
   email: string | null
+  displayName: string | null
   role: AuthUserRole
   createdAt: string
   lastSignInAt: string | null
@@ -256,6 +257,10 @@ export async function getAdminAuthUsers(): Promise<AdminAuthUser[]> {
       users.push({
         id: user.id,
         email: user.email ?? null,
+        displayName:
+          typeof user.user_metadata?.display_name === "string"
+            ? user.user_metadata.display_name
+            : null,
         role: adminRoleByUserId.get(user.id) ?? "registered",
         createdAt: user.created_at,
         lastSignInAt: user.last_sign_in_at ?? null,
