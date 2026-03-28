@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Eye, Star, X } from "lucide-react"
+import { Eye, Star, Trash2, X } from "lucide-react"
 import { cn, formatHistoryDate } from "@/lib/utils"
 import type {
   AdminMember,
@@ -25,6 +25,7 @@ interface PointsManagerProps {
   feedbackMessage: string | null
   feedbackError: string | null
   canDeleteMember: boolean
+  canDeletePointHistory: boolean
   onApply: (input: { activity: string; pointsChange: number }) => void
   onUpdateMemberProfile: (input: {
     memberId: string
@@ -33,6 +34,7 @@ interface PointsManagerProps {
     status: "active" | "inactive"
   }) => void
   onDeleteMember: (input: { memberId: string }) => void
+  onDeletePointEvent: (input: { pointEventId: string }) => void
 }
 
 export function PointsManager({
@@ -46,15 +48,19 @@ export function PointsManager({
   feedbackMessage,
   feedbackError,
   canDeleteMember,
+  canDeletePointHistory,
   onApply,
   onUpdateMemberProfile,
   onDeleteMember,
+  onDeletePointEvent,
 }: PointsManagerProps) {
   const [activity, setActivity] = useState("")
   const [pointsInput, setPointsInput] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const [historyEntryToDelete, setHistoryEntryToDelete] =
+    useState<AdminMemberHistoryEntry | null>(null)
   const [memberName, setMemberName] = useState("")
   const [memberImage, setMemberImage] = useState("")
   const [memberStatus, setMemberStatus] = useState<"active" | "inactive">(
@@ -71,6 +77,7 @@ export function PointsManager({
     if (!selectedMember) {
       setIsModalOpen(false)
       setIsDeleteConfirmOpen(false)
+      setHistoryEntryToDelete(null)
       setMemberName("")
       setMemberImage("")
       setMemberStatus("active")
@@ -178,6 +185,15 @@ export function PointsManager({
     setActivity(selectedTemplate.title)
     setPointsInput(String(selectedTemplate.pointsChange))
     setIsConfirmOpen(true)
+  }
+
+  const handleDeleteHistoryEntry = () => {
+    if (!historyEntryToDelete) {
+      return
+    }
+
+    onDeletePointEvent({ pointEventId: historyEntryToDelete.id })
+    setHistoryEntryToDelete(null)
   }
 
   return (
@@ -620,17 +636,31 @@ export function PointsManager({
                               {formatHistoryDate(entry.date)}
                             </p>
                           </div>
-                          <span
-                            className={cn(
-                              "chakra-bold font-semibold",
-                              entry.pointsChange >= 0
-                                ? "text-green-600"
-                                : "text-red-600",
-                            )}
-                          >
-                            {entry.pointsChange > 0 ? "+" : ""}
-                            {entry.pointsChange}
-                          </span>
+                          <div className="flex items-start gap-2">
+                            <span
+                              className={cn(
+                                "chakra-bold font-semibold",
+                                entry.pointsChange >= 0
+                                  ? "text-green-600"
+                                  : "text-red-600",
+                              )}
+                            >
+                              {entry.pointsChange > 0 ? "+" : ""}
+                              {entry.pointsChange}
+                            </span>
+                            {canDeletePointHistory ? (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => setHistoryEntryToDelete(entry)}
+                                aria-label={`Remove ${entry.activity} history entry`}
+                                className="h-8 w-8 text-muted-foreground hover:text-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -686,6 +716,72 @@ export function PointsManager({
                 disabled={isPending || !canDeleteMember}
               >
                 {isPending ? "Deleting..." : "Delete member"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {selectedMember && historyEntryToDelete ? (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">
+                  Remove point history entry
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  This will remove this points change from {selectedMember.name}&apos;s
+                  history and update their totals.
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setHistoryEntryToDelete(null)}
+                aria-label="Close point history delete confirmation"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="mt-6 rounded-xl border border-border bg-muted/20 p-4">
+              <p className="font-medium text-foreground">
+                {historyEntryToDelete.activity}
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {formatHistoryDate(historyEntryToDelete.date)}
+              </p>
+              <p
+                className={cn(
+                  "mt-3 chakra-bold text-sm font-semibold",
+                  historyEntryToDelete.pointsChange >= 0
+                    ? "text-green-600"
+                    : "text-red-600",
+                )}
+              >
+                {historyEntryToDelete.pointsChange > 0 ? "+" : ""}
+                {historyEntryToDelete.pointsChange}
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setHistoryEntryToDelete(null)}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteHistoryEntry}
+                disabled={isPending || !canDeletePointHistory}
+              >
+                {isPending ? "Removing..." : "Remove entry"}
               </Button>
             </div>
           </div>

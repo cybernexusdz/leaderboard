@@ -7,6 +7,7 @@ import {
   applyPointsAdjustment,
   createMember,
   deleteMember,
+  deletePointEvent,
   updateMemberProfile,
 } from "@/app/admin/actions"
 import { AdminDataTable } from "@/components/admin/admin-data-table"
@@ -230,6 +231,26 @@ export function AdminDashboard({
     })
   }
 
+  const handleDeletePointEvent = ({ pointEventId }: { pointEventId: string }) => {
+    setFeedbackMessage(null)
+    setFeedbackError(null)
+
+    startTransition(() => {
+      void deletePointEvent({ pointEventId })
+        .then(() => {
+          setFeedbackMessage("Point history entry removed successfully.")
+          router.refresh()
+        })
+        .catch((error) => {
+          setFeedbackError(
+            error instanceof Error
+              ? error.message
+              : "Unable to remove point history entry.",
+          )
+        })
+    })
+  }
+
   return (
     <div className="w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Card className="space-y-4 p-6 mb-6">
@@ -334,9 +355,11 @@ export function AdminDashboard({
             feedbackMessage={feedbackMessage}
             feedbackError={feedbackError}
             canDeleteMember={currentAdminRole === "super_admin"}
+            canDeletePointHistory={currentAdminRole === "super_admin"}
             onApply={handleApplyPoints}
             onUpdateMemberProfile={handleUpdateMemberProfile}
             onDeleteMember={handleDeleteMember}
+            onDeletePointEvent={handleDeletePointEvent}
           />
         </div>
       </div>

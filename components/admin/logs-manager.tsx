@@ -21,6 +21,7 @@ const actionLabels: Record<string, string> = {
   auth_user_created: "Auth user created",
   auth_user_updated: "Auth user updated",
   auth_user_deleted: "Auth user deleted",
+  point_event_deleted: "Point history removed",
 }
 
 export function LogsManager({ logs }: { logs: AdminAuditLog[] }) {

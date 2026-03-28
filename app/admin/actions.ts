@@ -61,6 +61,10 @@ type DeleteAuthUserInput = {
   userId: string
 }
 
+type DeletePointEventInput = {
+  pointEventId: string
+}
+
 type AdminAuditLogInsert = {
   actionType: string
   entityType: string
@@ -720,5 +724,70 @@ export async function deleteAuthUser({ userId }: DeleteAuthUserInput) {
   )
 
   revalidatePath("/admin/users")
+  revalidatePath("/admin/logs")
+}
+
+export async function deletePointEvent({ pointEventId }: DeletePointEventInput) {
+  const admin = await requireSuperAdmin()
+  const { supabase } = admin
+
+  const { data: existingPointEvent, error: existingPointEventError } = await supabase
+    .from("point_events")
+    .select("id, member_id, activity, points_change, created_at")
+    .eq("id", pointEventId)
+    .single()
+
+  if (existingPointEventError) {
+    throw existingPointEventError
+  }
+
+  const { data: member, error: memberError } = await supabase
+    .from("members")
+    .select("id, display_name")
+    .eq("id", existingPointEvent.member_id)
+    .single()
+
+  if (memberError) {
+    throw memberError
+  }
+
+  const { error: snapshotError } = await supabase.rpc(
+    "capture_member_snapshots",
+    { member_ids: [existingPointEvent.member_id] },
+  )
+
+  if (snapshotError) {
+    throw snapshotError
+  }
+
+  const { error } = await supabase
+    .from("point_events")
+    .delete()
+    .eq("id", pointEventId)
+
+  if (error) {
+    throw error
+  }
+
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "point_event_deleted",
+        entityType: "member",
+        entityId: member.id,
+        entityLabel: member.display_name,
+        details: {
+          pointEventId: existingPointEvent.id,
+          activity: existingPointEvent.activity,
+          pointsChange: existingPointEvent.points_change,
+          originalCreatedAt: existingPointEvent.created_at,
+        },
+      },
+    ],
+    admin,
+  )
+
+  revalidatePath("/")
+  revalidatePath("/admin")
   revalidatePath("/admin/logs")
 }
