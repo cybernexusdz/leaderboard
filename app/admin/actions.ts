@@ -26,6 +26,23 @@ type DeleteMemberInput = {
   memberId: string
 }
 
+type CreateReasonTemplateInput = {
+  title: string
+  pointsChange: number
+  isActive: boolean
+}
+
+type UpdateReasonTemplateInput = {
+  templateId: string
+  title: string
+  pointsChange: number
+  isActive: boolean
+}
+
+type DeleteReasonTemplateInput = {
+  templateId: string
+}
+
 export async function applyPointsAdjustment({
   activity,
   memberIds,
@@ -135,4 +152,88 @@ export async function deleteMember({ memberId }: DeleteMemberInput) {
 
   revalidatePath("/")
   revalidatePath("/admin")
+}
+
+export async function createReasonTemplate({
+  title,
+  pointsChange,
+  isActive,
+}: CreateReasonTemplateInput) {
+  const trimmedTitle = title.trim()
+
+  if (!trimmedTitle) {
+    throw new Error("Template title is required.")
+  }
+
+  if (!Number.isFinite(pointsChange) || pointsChange === 0) {
+    throw new Error("Template points must be a non-zero number.")
+  }
+
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase.from("reason_templates").insert({
+    title: trimmedTitle,
+    points_change: pointsChange,
+    is_active: isActive,
+  })
+
+  if (error) {
+    throw error
+  }
+
+  revalidatePath("/admin")
+  revalidatePath("/admin/templates")
+}
+
+export async function updateReasonTemplate({
+  templateId,
+  title,
+  pointsChange,
+  isActive,
+}: UpdateReasonTemplateInput) {
+  const trimmedTitle = title.trim()
+
+  if (!trimmedTitle) {
+    throw new Error("Template title is required.")
+  }
+
+  if (!Number.isFinite(pointsChange) || pointsChange === 0) {
+    throw new Error("Template points must be a non-zero number.")
+  }
+
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase
+    .from("reason_templates")
+    .update({
+      title: trimmedTitle,
+      points_change: pointsChange,
+      is_active: isActive,
+    })
+    .eq("id", templateId)
+
+  if (error) {
+    throw error
+  }
+
+  revalidatePath("/admin")
+  revalidatePath("/admin/templates")
+}
+
+export async function deleteReasonTemplate({
+  templateId,
+}: DeleteReasonTemplateInput) {
+  const { supabase } = await requireAdmin()
+
+  const { error } = await supabase
+    .from("reason_templates")
+    .delete()
+    .eq("id", templateId)
+
+  if (error) {
+    throw error
+  }
+
+  revalidatePath("/admin")
+  revalidatePath("/admin/templates")
 }
