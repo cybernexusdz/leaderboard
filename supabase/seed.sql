@@ -4,414 +4,634 @@
 -- Note:
 -- `admin_users` is intentionally not seeded here because it depends on real
 -- rows in `auth.users`. After creating your first admin account in Supabase
--- Auth, insert that user's id into `public.admin_users`.
+-- Auth, insert that user's id into `public.admin_users`
 
-insert into public.members (id, display_name, avatar_url, is_active)
+insert into
+  public.members (id, display_name, avatar_url, is_active)
 values
   (
     '11111111-1111-1111-1111-111111111111',
-    'Johnny Rios',
-    'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop',
+    'MrAhmed',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '22222222-2222-2222-2222-222222222222',
-    'Hammond',
-    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop',
+    'Salma',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '33333333-3333-3333-3333-333333333333',
-    'Hodges',
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop',
+    'Achouak Nour',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '44444444-4444-4444-4444-444444444444',
-    'Dora Hines',
-    'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop',
+    'Adam Rhmni',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '55555555-5555-5555-5555-555555555555',
-    'Carolyn Francis',
-    'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop',
+    'Mendjour Lounis',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '66666666-6666-6666-6666-666666666666',
-    'Isaiah McGee',
-    'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop',
+    'Norddine',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '77777777-7777-7777-7777-777777777777',
-    'Mark Holmes',
+    'Hafid',
     'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   ),
   (
     '88888888-8888-8888-8888-888888888888',
-    'Georgie Clayton',
-    null,
+    'Nadji Mechta',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '99999999-9999-9999-9999-999999999999',
+    'Mouhamed',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+    'Fatah',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+    'Amine',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'cccccccc-cccc-cccc-cccc-cccccccccccc',
+    'Karim',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'dddddddd-dddd-dddd-dddd-dddddddddddd',
+    'Mohamed Reggad',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
+    'Islem',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    'Aliah',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '12121212-1212-1212-1212-121212121212',
+    'Samadoo',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '13131313-1313-1313-1313-131313131313',
+    'Ahlem Moussa',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '14141414-1414-1414-1414-141414141414',
+    'Samira Mostefaoui',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '15151515-1515-1515-1515-151515151515',
+    'Farah',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '16161616-1616-1616-1616-161616161616',
+    'Kawther Hadjadj',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '17171717-1717-1717-1717-171717171717',
+    'Achraf Riadh',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '18181818-1818-1818-1818-181818181818',
+    'повар',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '19191919-1919-1919-1919-191919191919',
+    'Rafika Rohdea',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '20202020-2020-2020-2020-202020202020',
+    'Abderrhmane',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '21212121-2121-2121-2121-212121212121',
+    'Rania Manel',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    'a1b2c3d4-e5f6-4a7b-8c9d-e0f1a2b3c4d5',
+    'Abd al-Jabbar',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '23232323-2323-2323-2323-232323232323',
+    'Kamel',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '24242424-2424-2424-2424-242424242424',
+    'Hakim',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '25252525-2525-2525-2525-252525252525',
+    'Catrina',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '26262626-2626-2626-2626-262626262626',
+    'Aziz Ben',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '27272727-2727-2727-2727-272727272727',
+    'Sofiane Dex',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '28282828-2828-2828-2828-282828282828',
+    'Soltana',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '29292929-2929-2929-2929-292929292929',
+    'Aya',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '30303030-3030-3030-3030-303030303030',
+    'Bedoui Denia',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
+    true
+  ),
+  (
+    '31313131-3131-3131-3131-313131313131',
+    'Hadi Adda',
+    'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400&h=400&fit=crop',
     true
   )
 on conflict (id) do update
 set
-  display_name = excluded.display_name,
-  avatar_url = excluded.avatar_url,
-  is_active = excluded.is_active;
+  display_name = excluded.display_name;
 
-insert into public.point_events (id, member_id, activity, points_change, created_at)
-values
-  (
-    'a1111111-1111-1111-1111-111111111111',
-    '11111111-1111-1111-1111-111111111111',
-    'Completed task: Website redesign',
-    500,
-    date_trunc('month', now()) + interval '2 days'
-  ),
-  (
-    'a1111111-1111-1111-1111-111111111112',
-    '11111111-1111-1111-1111-111111111111',
-    'Code review contribution',
-    250,
-    date_trunc('month', now()) + interval '7 days'
-  ),
-  (
-    'a1111111-1111-1111-1111-111111111113',
-    '11111111-1111-1111-1111-111111111111',
-    'Bug fix: Critical issue resolved',
-    300,
-    date_trunc('month', now()) + interval '11 days'
-  ),
-  (
-    'a1111111-1111-1111-1111-111111111114',
-    '11111111-1111-1111-1111-111111111111',
-    'Last quarter bonus',
-    8604,
-    date_trunc('month', now()) - interval '45 days'
-  ),
-  (
-    'a2222222-2222-2222-2222-222222222221',
-    '22222222-2222-2222-2222-222222222222',
-    'Shipped internal tooling update',
-    400,
-    date_trunc('month', now()) + interval '3 days'
-  ),
-  (
-    'a2222222-2222-2222-2222-222222222222',
-    '22222222-2222-2222-2222-222222222222',
-    'Mentored teammate',
-    232,
-    date_trunc('month', now()) + interval '9 days'
-  ),
-  (
-    'a2222222-2222-2222-2222-222222222223',
-    '22222222-2222-2222-2222-222222222222',
-    'Feature delivery milestone',
-    8000,
-    date_trunc('month', now()) - interval '65 days'
-  ),
-  (
-    'a3333333-3333-3333-3333-333333333331',
-    '33333333-3333-3333-3333-333333333333',
-    'Sprint contribution',
-    378,
-    date_trunc('month', now()) + interval '4 days'
-  ),
-  (
-    'a3333333-3333-3333-3333-333333333332',
-    '33333333-3333-3333-3333-333333333333',
-    'Cross-team support',
-    500,
-    date_trunc('month', now()) + interval '8 days'
-  ),
-  (
-    'a3333333-3333-3333-3333-333333333333',
-    '33333333-3333-3333-3333-333333333333',
-    'Quarterly delivery bonus',
-    6000,
-    date_trunc('month', now()) - interval '95 days'
-  ),
-  (
-    'a4444444-4444-4444-4444-444444444441',
-    '44444444-4444-4444-4444-444444444444',
-    'Documentation update',
-    100,
-    date_trunc('month', now()) + interval '5 days'
-  ),
-  (
-    'a4444444-4444-4444-4444-444444444442',
-    '44444444-4444-4444-4444-444444444444',
-    'Team presentation',
-    200,
-    date_trunc('month', now()) + interval '10 days'
-  ),
-  (
-    'a4444444-4444-4444-4444-444444444443',
-    '44444444-4444-4444-4444-444444444444',
-    'Missed deadline penalty',
-    -50,
-    date_trunc('month', now()) + interval '14 days'
-  ),
-  (
-    'a4444444-4444-4444-4444-444444444444',
-    '44444444-4444-4444-4444-444444444444',
-    'Legacy project contribution',
-    6182,
-    date_trunc('month', now()) - interval '120 days'
-  ),
-  (
-    'a5555555-5555-5555-5555-555555555551',
-    '55555555-5555-5555-5555-555555555555',
-    'Accessibility improvements',
-    132,
-    date_trunc('month', now()) + interval '6 days'
-  ),
-  (
-    'a5555555-5555-5555-5555-555555555552',
-    '55555555-5555-5555-5555-555555555555',
-    'QA support',
-    100,
-    date_trunc('month', now()) + interval '12 days'
-  ),
-  (
-    'a5555555-5555-5555-5555-555555555553',
-    '55555555-5555-5555-5555-555555555555',
-    'Platform migration help',
-    5000,
-    date_trunc('month', now()) - interval '85 days'
-  ),
-  (
-    'a6666666-6666-6666-6666-666666666661',
-    '66666666-6666-6666-6666-666666666666',
-    'Bug bash participation',
-    100,
-    date_trunc('month', now()) + interval '1 day'
-  ),
-  (
-    'a6666666-6666-6666-6666-666666666662',
-    '66666666-6666-6666-6666-666666666666',
-    'Performance optimization',
-    100,
-    date_trunc('month', now()) + interval '13 days'
-  ),
-  (
-    'a6666666-6666-6666-6666-666666666663',
-    '66666666-6666-6666-6666-666666666666',
-    'Ops support',
-    5000,
-    date_trunc('month', now()) - interval '75 days'
-  ),
-  (
-    'a7777777-7777-7777-7777-777777777771',
-    '77777777-7777-7777-7777-777777777777',
-    'Customer bug fix',
-    97,
-    date_trunc('month', now()) + interval '2 days'
-  ),
-  (
-    'a7777777-7777-7777-7777-777777777772',
-    '77777777-7777-7777-7777-777777777777',
-    'Documentation review',
-    100,
-    date_trunc('month', now()) + interval '16 days'
-  ),
-  (
-    'a7777777-7777-7777-7777-777777777773',
-    '77777777-7777-7777-7777-777777777777',
-    'Historical delivery work',
-    4800,
-    date_trunc('month', now()) - interval '150 days'
-  ),
-  (
-    'a8888888-8888-8888-8888-888888888881',
-    '88888888-8888-8888-8888-888888888888',
-    'New member onboarding',
-    100,
-    date_trunc('month', now()) + interval '4 days'
-  ),
-  (
-    'a8888888-8888-8888-8888-888888888882',
-    '88888888-8888-8888-8888-888888888888',
-    'Knowledge sharing session',
-    100,
-    date_trunc('month', now()) + interval '18 days'
-  ),
-  (
-    'a8888888-8888-8888-8888-888888888883',
-    '88888888-8888-8888-8888-888888888888',
-    'Archived project carryover',
-    3000,
-    date_trunc('month', now()) - interval '200 days'
+insert into
+  public.point_events (
+    id,
+    member_id,
+    activity,
+    points_change,
+    created_at
   )
-on conflict (id) do nothing;
-
-insert into public.leaderboard_snapshots (id, member_id, period_slug, rank, points, captured_at)
-values
+values 
   (
-    'b1111111-1111-1111-1111-111111111111',
+    gen_random_uuid (),
     '11111111-1111-1111-1111-111111111111',
-    'this_month',
-    1,
-    1000,
-    now() - interval '1 day'
+    'إنجاز مهمة رئيسية',
+    15,
+    now() - interval '2 days'
   ),
   (
-    'b1111111-1111-1111-1111-111111111112',
+    gen_random_uuid (),
     '11111111-1111-1111-1111-111111111111',
-    'all_time',
-    1,
-    9300,
-    now() - interval '1 day'
+    'تنظيم حدث',
+    20,
+    now() - interval '5 days'
   ),
   (
-    'b2222222-2222-2222-2222-222222222221',
+    gen_random_uuid (),
+    '11111111-1111-1111-1111-111111111111',
+    'جلب شراكة رسمية',
+    40,
+    now() - interval '20 days'
+  ),
+  -- Salma
+  (
+    gen_random_uuid (),
     '22222222-2222-2222-2222-222222222222',
-    'this_month',
-    3,
-    500,
-    now() - interval '1 day'
+    'مساعدة عضو آخر',
+    10,
+    now() - interval '3 days'
   ),
   (
-    'b2222222-2222-2222-2222-222222222222',
+    gen_random_uuid (),
     '22222222-2222-2222-2222-222222222222',
-    'all_time',
-    2,
-    8400,
-    now() - interval '1 day'
+    'إنشاء محتوى',
+    6,
+    now() - interval '10 days'
   ),
+  -- Achouak Nour
   (
-    'b3333333-3333-3333-3333-333333333331',
+    gen_random_uuid (),
     '33333333-3333-3333-3333-333333333333',
-    'this_month',
-    2,
-    820,
-    now() - interval '1 day'
+    'تصميم منشور',
+    5,
+    now() - interval '4 days'
   ),
   (
-    'b3333333-3333-3333-3333-333333333332',
+    gen_random_uuid (),
     '33333333-3333-3333-3333-333333333333',
-    'all_time',
-    3,
-    6800,
-    now() - interval '1 day'
+    'إبداع في التصميم',
+    9,
+    now() - interval '15 days'
   ),
+  -- Adam Rhmni
   (
-    'b4444444-4444-4444-4444-444444444441',
+    gen_random_uuid (),
     '44444444-4444-4444-4444-444444444444',
+    'تقديم عرض',
+    7,
+    now() - interval '2 days'
+  ),
+  (
+    gen_random_uuid (),
+    '44444444-4444-4444-4444-444444444444',
+    'جودة العرض',
+    10,
+    now() - interval '12 days'
+  ),
+  -- Random distribution for rest
+  (
+    gen_random_uuid (),
+    '55555555-5555-5555-5555-555555555555',
+    'الحضور في الوقت',
+    3,
+    now() - interval '1 day'
+  ),
+  (
+    gen_random_uuid (),
+    '66666666-6666-6666-6666-666666666666',
+    'التأخر',
+    -2,
+    now() - interval '6 days'
+  ),
+  (
+    gen_random_uuid (),
+    '77777777-7777-7777-7777-777777777777',
+    'المشاركة في حدث',
+    5,
+    now() - interval '7 days'
+  ),
+  (
+    gen_random_uuid (),
+    '88888888-8888-8888-8888-888888888888',
+    'عدم التفاعل',
+    -3,
+    now() - interval '9 days'
+  ),
+  (
+    gen_random_uuid (),
+    '99999999-9999-9999-9999-999999999999',
+    'العمل الجماعي الممتاز',
+    9,
+    now() - interval '3 days'
+  ),
+  (
+    gen_random_uuid (),
+    'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
+    'التكاسل',
+    -5,
+    now() - interval '11 days'
+  ),
+  (
+    gen_random_uuid (),
+    'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+    'اقتراح فكرة جديدة',
+    6,
+    now() - interval '5 days'
+  ),
+  (
+    gen_random_uuid (),
+    'cccccccc-cccc-cccc-cccc-cccccccccccc',
+    'تحسين عملية داخلية',
+    10,
+    now() - interval '13 days'
+  ),
+  (
+    gen_random_uuid (),
+    'dddddddd-dddd-dddd-dddd-dddddddddddd',
+    'تقديم تقرير مفصل',
+    7,
+    now() - interval '8 days'
+  ),
+  (
+    gen_random_uuid (),
+    'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee',
+    'عدم تقديم التقرير',
+    -6,
+    now() - interval '14 days'
+  ),
+  (
+    gen_random_uuid (),
+    'ffffffff-ffff-ffff-ffff-ffffffffffff',
+    'المبادرة بدون طلب',
+    6,
+    now() - interval '6 days'
+  ),
+  (
+    gen_random_uuid (),
+    '12121212-1212-1212-1212-121212121212',
+    'زيادة التفاعل',
+    10,
+    now() - interval '2 days'
+  ),
+  (
+    gen_random_uuid (),
+    '13131313-1313-1313-1313-131313131313',
+    'إدارة حساب',
+    8,
+    now() - interval '4 days'
+  ),
+  (
+    gen_random_uuid (),
+    '14141414-1414-1414-1414-141414141414',
+    'نشر منتظم',
+    4,
+    now() - interval '10 days'
+  ),
+  (
+    gen_random_uuid (),
+    '15151515-1515-1515-1515-151515151515',
+    'تصوير حدث',
+    6,
+    now() - interval '6 days'
+  ),
+  (
+    gen_random_uuid (),
+    '16161616-1616-1616-1616-161616161616',
+    'مونتاج فيديو',
+    8,
+    now() - interval '9 days'
+  ),
+  (
+    gen_random_uuid (),
+    '17171717-1717-1717-1717-171717171717',
+    'تغطية حدث كاملة',
+    12,
+    now() - interval '7 days'
+  ),
+  (
+    gen_random_uuid (),
+    '18181818-1818-1818-1818-181818181818',
+    'إرسال تقرير التغطية',
+    5,
+    now() - interval '12 days'
+  );
+
+insert into
+  public.leaderboard_snapshots (
+    id,
+    member_id,
+    period_slug,
+    rank,
+    points,
+    captured_at
+  )
+values
+  -- THIS MONTH
+  (
+    gen_random_uuid (),
+    '11111111-1111-1111-1111-111111111111',
+    'this_month',
+    1,
+    75,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '22222222-2222-2222-2222-222222222222',
+    'this_month',
+    2,
+    30,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '33333333-3333-3333-3333-333333333333',
+    'this_month',
+    3,
+    28,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '44444444-4444-4444-4444-444444444444',
+    'this_month',
+    4,
+    25,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '55555555-5555-5555-5555-555555555555',
     'this_month',
     5,
-    200,
-    now() - interval '1 day'
+    10,
+    now()
   ),
   (
-    'b4444444-4444-4444-4444-444444444442',
+    gen_random_uuid (),
+    '66666666-6666-6666-6666-666666666666',
+    'this_month',
+    6,
+    8,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '77777777-7777-7777-7777-777777777777',
+    'this_month',
+    7,
+    7,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '88888888-8888-8888-8888-888888888888',
+    'this_month',
+    8,
+    6,
+    now()
+  ),
+  -- ALL TIME
+  (
+    gen_random_uuid (),
+    '11111111-1111-1111-1111-111111111111',
+    'all_time',
+    1,
+    420,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '22222222-2222-2222-2222-222222222222',
+    'all_time',
+    2,
+    310,
+    now()
+  ),
+  (
+    gen_random_uuid (),
+    '33333333-3333-3333-3333-333333333333',
+    'all_time',
+    3,
+    290,
+    now()
+  ),
+  (
+    gen_random_uuid (),
     '44444444-4444-4444-4444-444444444444',
     'all_time',
     4,
-    6300,
-    now() - interval '1 day'
+    250,
+    now()
   ),
   (
-    'b5555555-5555-5555-5555-555555555551',
-    '55555555-5555-5555-5555-555555555555',
-    'this_month',
-    6,
-    180,
-    now() - interval '1 day'
-  ),
-  (
-    'b5555555-5555-5555-5555-555555555552',
+    gen_random_uuid (),
     '55555555-5555-5555-5555-555555555555',
     'all_time',
     5,
-    5100,
-    now() - interval '1 day'
+    200,
+    now()
   ),
   (
-    'b6666666-6666-6666-6666-666666666661',
-    '66666666-6666-6666-6666-666666666666',
-    'this_month',
-    7,
-    150,
-    now() - interval '1 day'
-  ),
-  (
-    'b6666666-6666-6666-6666-666666666662',
+    gen_random_uuid (),
     '66666666-6666-6666-6666-666666666666',
     'all_time',
     6,
-    5050,
-    now() - interval '1 day'
+    180,
+    now()
   ),
   (
-    'b7777777-7777-7777-7777-777777777771',
-    '77777777-7777-7777-7777-777777777777',
-    'this_month',
-    8,
-    150,
-    now() - interval '1 day'
-  ),
-  (
-    'b7777777-7777-7777-7777-777777777772',
+    gen_random_uuid (),
     '77777777-7777-7777-7777-777777777777',
     'all_time',
     7,
-    4900,
-    now() - interval '1 day'
+    150,
+    now()
   ),
   (
-    'b8888888-8888-8888-8888-888888888881',
-    '88888888-8888-8888-8888-888888888888',
-    'this_month',
-    9,
-    100,
-    now() - interval '1 day'
-  ),
-  (
-    'b8888888-8888-8888-8888-888888888882',
+    gen_random_uuid (),
     '88888888-8888-8888-8888-888888888888',
     'all_time',
     8,
-    3100,
-    now() - interval '1 day'
+    120,
+    now()
   )
 on conflict (id) do nothing;
 
-insert into public.reason_templates (id, title, points_change, is_active)
+insert into
+  public.reason_templates (id, title, points_change, is_active)
 values
-  (
-    '99999999-0000-0000-0000-000000000001',
-    'Sprint delivery bonus',
-    100,
-    true
-  ),
-  (
-    '99999999-0000-0000-0000-000000000002',
-    'Helping teammate',
-    50,
-    true
-  ),
-  (
-    '99999999-0000-0000-0000-000000000003',
-    'Critical bug fix',
-    150,
-    true
-  ),
-  (
-    '99999999-0000-0000-0000-000000000004',
-    'Missed deadline penalty',
-    -50,
-    true
-  ),
-  (
-    '99999999-0000-0000-0000-000000000005',
-    'Documentation contribution',
-    25,
-    true
-  )
+  ('a0000001-0000-0000-0000-000000000001', 'إنجاز مهمة رئيسية', 15, true),
+  ('a0000001-0000-0000-0000-000000000002', 'إنجاز مهمة صغيرة', 5, true),
+  ('a0000001-0000-0000-0000-000000000003', 'حل مشكلة تقنية أو تنظيمية', 8, true),
+  ('a0000001-0000-0000-0000-000000000004', 'مساعدة عضو آخر', 10, true),
+  ('a0000001-0000-0000-0000-000000000005', 'تأطير وتنظيم ورشة كاملة', 25, true),
+  ('a0000001-0000-0000-0000-000000000006', 'الحضور في الوقت', 3, true),
+  ('a0000001-0000-0000-0000-000000000007', 'التأخر', -2, true),
+  ('a0000001-0000-0000-0000-000000000008', 'الغياب بدون عذر', -5, true),
+  ('a0000001-0000-0000-0000-000000000009', 'المشاركة الفعالة في الاجتماع', 4, true),
+  ('a0000001-0000-0000-0000-000000000010', 'عدم التفاعل', -3, true),
+  ('a0000001-0000-0000-0000-000000000011', 'اقتراح فكرة جديدة', 6, true),
+  ('a0000001-0000-0000-0000-000000000012', 'تطبيق فكرة مبتكرة', 12, true),
+  ('a0000001-0000-0000-0000-000000000013', 'تحسين عملية داخلية', 10, true),
+  ('a0000001-0000-0000-0000-000000000014', 'تقديم تقرير مفصل', 7, true),
+  ('a0000001-0000-0000-0000-000000000015', 'عدم تقديم التقرير', -6, true),
+  ('a0000001-0000-0000-0000-000000000016', 'المشاركة في حدث', 5, true),
+  ('a0000001-0000-0000-0000-000000000017', 'تنظيم حدث', 20, true),
+  ('a0000001-0000-0000-0000-000000000018', 'المساهمة في التنظيم', 8, true),
+  ('a0000001-0000-0000-0000-000000000019', 'عدم الالتزام بالمهام', -7, true),
+  ('a0000001-0000-0000-0000-000000000020', 'العمل الجماعي الممتاز', 9, true),
+  ('a0000001-0000-0000-0000-000000000021', 'إثارة مشاكل داخل الفريق', -10, true),
+  ('a0000001-0000-0000-0000-000000000022', 'احترام القوانين', 2, true),
+  ('a0000001-0000-0000-0000-000000000023', 'خرق القوانين', -8, true),
+  ('a0000001-0000-0000-0000-000000000024', 'المبادرة بدون طلب', 6, true),
+  ('a0000001-0000-0000-0000-000000000025', 'التكاسل', -5, true),
+  ('a0000001-0000-0000-0000-000000000026', 'تحقيق هدف شهري', 15, true),
+  ('a0000001-0000-0000-0000-000000000027', 'عدم تحقيق الهدف', -10, true),
+  ('a0000001-0000-0000-0000-000000000028', 'المساهمة في التسويق', 7, true),
+  ('a0000001-0000-0000-0000-000000000029', 'إنشاء محتوى', 6, true),
+  ('a0000001-0000-0000-0000-000000000030', 'تصميم منشور', 5, true),
+  ('a0000001-0000-0000-0000-000000000031', 'إدارة حساب', 8, true),
+  ('a0000001-0000-0000-0000-000000000032', 'زيادة التفاعل', 10, true),
+  ('a0000001-0000-0000-0000-000000000033', 'نشر منتظم', 4, true),
+  ('a0000001-0000-0000-0000-000000000034', 'عدم النشر', -6, true),
+  ('a0000001-0000-0000-0000-000000000035', 'تصوير حدث', 6, true),
+  ('a0000001-0000-0000-0000-000000000036', 'مونتاج فيديو', 8, true),
+  ('a0000001-0000-0000-0000-000000000037', 'إبداع في التصميم', 9, true),
+  ('a0000001-0000-0000-0000-000000000038', 'تغطية حدث كاملة', 12, true),
+  ('a0000001-0000-0000-0000-000000000039', 'إرسال تقرير التغطية', 5, true),
+  ('a0000001-0000-0000-0000-000000000040', 'التأخر في التسليم', -4, true),
+  ('a0000001-0000-0000-0000-000000000041', 'تقديم عرض', 7, true),
+  ('a0000001-0000-0000-0000-000000000042', 'جودة العرض', 10, true),
+  ('a0000001-0000-0000-0000-000000000043', 'ضعف العرض', -5, true),
+  ('a0000001-0000-0000-0000-000000000044', 'الإجابة على الأسئلة', 4, true),
+  ('a0000001-0000-0000-0000-000000000045', 'عدم التحضير', -6, true),
+  ('a0000001-0000-0000-0000-000000000046', 'التفاعل مع الجمهور', 6, true),
+  ('a0000001-0000-0000-0000-000000000047', 'تنظيم الوقت أثناء العرض', 5, true),
+  ('a0000001-0000-0000-0000-000000000048', 'تجاوز الوقت', -3, true),
+  ('a0000001-0000-0000-0000-000000000049', 'تقديم تدريب', 15, true),
+  ('a0000001-0000-0000-0000-000000000050', 'جودة التدريب', 12, true),
+  ('a0000001-0000-0000-0000-000000000051', 'ضعف التدريب', -8, true),
+  ('a0000001-0000-0000-0000-000000000052', 'تحضير محتوى التدريب', 10, true),
+  ('a0000001-0000-0000-0000-000000000053', 'عدم التحضير', -7, true),
+  ('a0000001-0000-0000-0000-000000000054', 'تفاعل المتدربين', 8, true),
+  ('a0000001-0000-0000-0000-000000000055', 'تقييم إيجابي', 10, true),
+  ('a0000001-0000-0000-0000-000000000056', 'تقييم سلبي', -6, true),
+  ('a0000001-0000-0000-0000-000000000057', 'متابعة المتدربين', 6, true),
+  ('a0000001-0000-0000-0000-000000000058', 'جلب متحدث مميز', 20, true),
+  ('a0000001-0000-0000-0000-000000000059', 'جلب مدرب من شركة معروفة', 25, true),
+  ('a0000001-0000-0000-0000-000000000061', 'جلب شراكة رسمية', 40, true),
+  ('a0000001-0000-0000-0000-000000000062', 'توفير تدريب خارجي للأعضاء', 35, true)
 on conflict (id) do update
 set
   title = excluded.title,
