@@ -60,6 +60,10 @@ function getRankChange(previousRank?: number | null, currentRank?: number) {
 
   return previousRank - currentRank
 }
+
+function shouldShowPodium(users: LeaderboardUser[]) {
+  return users.length === 3 && users.every((user) => user.points > 0)
+}
  
 function TrendIndicator({
   previousRank,
@@ -219,8 +223,10 @@ export function RankingsList({
 }: RankingsListProps) {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
 
-  const orderedPodiumUsers = getPodiumDisplayOrder(podiumUsers)
+  const showPodium = shouldShowPodium(podiumUsers)
+  const orderedPodiumUsers = showPodium ? getPodiumDisplayOrder(podiumUsers) : []
   const allUsers = [...podiumUsers, ...rankingUsers]
+  const listUsers = showPodium ? rankingUsers : allUsers
   const selectedUser =
     allUsers.find((user) => user.id === selectedUserId) ?? null
 
@@ -243,18 +249,20 @@ export function RankingsList({
 
   return (
     <>
-      <div className="relative z-10 mb-2 flex w-full max-w-2xl items-end justify-center space-x-1 px-2 sm:px-0 sm:space-x-4">
-        {orderedPodiumUsers.map((user) => (
-          <PodiumPlace
-            key={user.id}
-            user={user}
-            onSelect={handleSelectUser}
-          />
-        ))}
-      </div>
+      {showPodium ? (
+        <div className="relative z-10 mb-2 flex w-full max-w-2xl items-end justify-center space-x-1 px-2 sm:px-0 sm:space-x-4">
+          {orderedPodiumUsers.map((user) => (
+            <PodiumPlace
+              key={user.id}
+              user={user}
+              onSelect={handleSelectUser}
+            />
+          ))}
+        </div>
+      ) : null}
 
       <div className="mx-auto flex w-full max-w-2xl flex-col">
-        {rankingUsers.map((user) => (
+        {listUsers.map((user) => (
           <RankingsListItem
             key={user.id}
             user={user}
