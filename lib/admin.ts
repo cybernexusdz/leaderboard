@@ -1,4 +1,8 @@
+import { createAdminClient } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
+
+export type AdminRole = "admin" | "super_admin"
+export type AuthUserRole = "registered" | AdminRole
 
 export type AdminMember = {
   id: string
@@ -37,6 +41,14 @@ export type AdminAuditLog = {
   createdAt: string
 }
 
+export type AdminAuthUser = {
+  id: string
+  email: string | null
+  role: AuthUserRole
+  createdAt: string
+  lastSignInAt: string | null
+}
+
 export async function requireAdmin() {
   const supabase = await createClient()
   const {
@@ -58,7 +70,32 @@ export async function requireAdmin() {
     throw new Error("You do not have admin access.")
   }
 
-  return { supabase, userId: user.id, userEmail: user.email ?? null }
+  const { data: adminUser, error: adminUserError } = await supabase
+    .from("admin_users")
+    .select("role")
+    .eq("id", user.id)
+    .single()
+
+  if (adminUserError) {
+    throw adminUserError
+  }
+
+  return {
+    supabase,
+    userId: user.id,
+    userEmail: user.email ?? null,
+    role: adminUser.role as AdminRole,
+  }
+}
+
+export async function requireSuperAdmin() {
+  const admin = await requireAdmin()
+
+  if (admin.role !== "super_admin") {
+    throw new Error("Only super admins can manage users.")
+  }
+
+  return admin
 }
 
 export async function getAdminMembers(): Promise<AdminMember[]> {
@@ -183,4 +220,56 @@ export async function getAdminAuditLogs(): Promise<AdminAuditLog[]> {
         : {},
     createdAt: log.created_at,
   }))
+}
+
+export async function getAdminAuthUsers(): Promise<AdminAuthUser[]> {
+  const { supabase } = await requireSuperAdmin()
+  const adminClient = createAdminClient()
+
+  const { data: adminUsers, error: adminUsersError } = await supabase
+    .from("admin_users")
+    .select("id, role")
+
+  if (adminUsersError) {
+    throw adminUsersError
+  }
+
+  const adminRoleByUserId = new Map(
+    (adminUsers ?? []).map((adminUser) => [adminUser.id, adminUser.role as AdminRole]),
+  )
+
+  const users: AdminAuthUser[] = []
+  let page = 1
+  const perPage = 200
+
+  while (true) {
+    const { data, error } = await adminClient.auth.admin.listUsers({
+      page,
+      perPage,
+    })
+
+    if (error) {
+      throw error
+    }
+
+    for (const user of data.users) {
+      users.push({
+        id: user.id,
+        email: user.email ?? null,
+        role: adminRoleByUserId.get(user.id) ?? "registered",
+        createdAt: user.created_at,
+        lastSignInAt: user.last_sign_in_at ?? null,
+      })
+    }
+
+    if (data.users.length < perPage) {
+      break
+    }
+
+    page += 1
+  }
+
+  return users.toSorted((left, right) =>
+    new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+  )
 }

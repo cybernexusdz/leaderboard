@@ -1,6 +1,7 @@
 "use server"
 
-import { requireAdmin } from "@/lib/admin"
+import { requireAdmin, requireSuperAdmin } from "@/lib/admin"
+import { createAdminClient } from "@/lib/supabase/admin"
 import { revalidatePath } from "next/cache"
 
 type ApplyPointsAdjustmentInput = {
@@ -41,6 +42,23 @@ type UpdateReasonTemplateInput = {
 
 type DeleteReasonTemplateInput = {
   templateId: string
+}
+
+type CreateAuthUserInput = {
+  email: string
+  password: string
+  role: "registered" | "admin" | "super_admin"
+}
+
+type UpdateAuthUserInput = {
+  userId: string
+  email: string
+  password?: string
+  role: "registered" | "admin" | "super_admin"
+}
+
+type DeleteAuthUserInput = {
+  userId: string
 }
 
 type AdminAuditLogInsert = {
@@ -277,6 +295,10 @@ export async function deleteMember({ memberId }: DeleteMemberInput) {
   const admin = await requireAdmin()
   const { supabase } = admin
 
+  if (admin.role !== "super_admin") {
+    throw new Error("Only super admins can delete members.")
+  }
+
   const { data: existingMember, error: existingMemberError } = await supabase
     .from("members")
     .select("id, display_name, avatar_url, is_active")
@@ -484,5 +506,219 @@ export async function deleteReasonTemplate({
 
   revalidatePath("/admin")
   revalidatePath("/admin/templates")
+  revalidatePath("/admin/logs")
+}
+
+export async function createAuthUser({
+  email,
+  password,
+  role,
+}: CreateAuthUserInput) {
+  const admin = await requireSuperAdmin()
+  const authAdmin = createAdminClient()
+  const normalizedEmail = email.trim().toLowerCase()
+  const trimmedPassword = password.trim()
+
+  if (!normalizedEmail) {
+    throw new Error("Email is required.")
+  }
+
+  if (trimmedPassword.length < 6) {
+    throw new Error("Password must be at least 6 characters.")
+  }
+
+  const { data, error } = await authAdmin.auth.admin.createUser({
+    email: normalizedEmail,
+    password: trimmedPassword,
+    email_confirm: true,
+  })
+
+  if (error) {
+    throw error
+  }
+
+  if (!data.user) {
+    throw new Error("Unable to create auth user.")
+  }
+
+  if (role !== "registered") {
+    const { error: roleError } = await admin.supabase.from("admin_users").upsert({
+      id: data.user.id,
+      role,
+    })
+
+    if (roleError) {
+      throw roleError
+    }
+  }
+
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "auth_user_created",
+        entityType: "auth_user",
+        entityId: data.user.id,
+        entityLabel: normalizedEmail,
+        details: {
+          email: normalizedEmail,
+          role,
+        },
+      },
+    ],
+    admin,
+  )
+
+  revalidatePath("/admin/users")
+  revalidatePath("/admin/logs")
+}
+
+export async function updateAuthUser({
+  userId,
+  email,
+  password,
+  role,
+}: UpdateAuthUserInput) {
+  const admin = await requireSuperAdmin()
+  const authAdmin = createAdminClient()
+  const normalizedEmail = email.trim().toLowerCase()
+  const trimmedPassword = password?.trim() ?? ""
+
+  if (!normalizedEmail) {
+    throw new Error("Email is required.")
+  }
+
+  if (trimmedPassword && trimmedPassword.length < 6) {
+    throw new Error("Password must be at least 6 characters.")
+  }
+
+  if (userId === admin.userId && role !== "super_admin") {
+    throw new Error("You cannot remove your own super admin access.")
+  }
+
+  const { data: existingUserResponse, error: existingUserError } =
+    await authAdmin.auth.admin.getUserById(userId)
+
+  if (existingUserError) {
+    throw existingUserError
+  }
+
+  const existingUser = existingUserResponse.user
+
+  const { data: existingAdminRole, error: existingAdminRoleError } = await admin.supabase
+    .from("admin_users")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle()
+
+  if (existingAdminRoleError) {
+    throw existingAdminRoleError
+  }
+
+  const { error: updateError } = await authAdmin.auth.admin.updateUserById(userId, {
+    email: normalizedEmail,
+    ...(trimmedPassword ? { password: trimmedPassword } : {}),
+  })
+
+  if (updateError) {
+    throw updateError
+  }
+
+  if (role === "registered") {
+    const { error: roleDeleteError } = await admin.supabase
+      .from("admin_users")
+      .delete()
+      .eq("id", userId)
+
+    if (roleDeleteError) {
+      throw roleDeleteError
+    }
+  } else {
+    const { error: roleUpsertError } = await admin.supabase.from("admin_users").upsert({
+      id: userId,
+      role,
+    })
+
+    if (roleUpsertError) {
+      throw roleUpsertError
+    }
+  }
+
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "auth_user_updated",
+        entityType: "auth_user",
+        entityId: userId,
+        entityLabel: normalizedEmail,
+        details: {
+          before: {
+            email: existingUser.email ?? null,
+            role: existingAdminRole?.role ?? "registered",
+          },
+          after: {
+            email: normalizedEmail,
+            role,
+            passwordUpdated: Boolean(trimmedPassword),
+          },
+        },
+      },
+    ],
+    admin,
+  )
+
+  revalidatePath("/admin/users")
+  revalidatePath("/admin/logs")
+}
+
+export async function deleteAuthUser({ userId }: DeleteAuthUserInput) {
+  const admin = await requireSuperAdmin()
+  const authAdmin = createAdminClient()
+
+  if (userId === admin.userId) {
+    throw new Error("You cannot delete your own account.")
+  }
+
+  const { data: existingUserResponse, error: existingUserError } =
+    await authAdmin.auth.admin.getUserById(userId)
+
+  if (existingUserError) {
+    throw existingUserError
+  }
+
+  const existingUser = existingUserResponse.user
+
+  const { data: existingAdminRole, error: existingAdminRoleError } = await admin.supabase
+    .from("admin_users")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle()
+
+  if (existingAdminRoleError) {
+    throw existingAdminRoleError
+  }
+
+  const { error } = await authAdmin.auth.admin.deleteUser(userId)
+
+  if (error) {
+    throw error
+  }
+
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "auth_user_deleted",
+        entityType: "auth_user",
+        entityId: userId,
+        entityLabel: existingUser.email ?? userId,
+        details: {
+          email: existingUser.email ?? null,
+          role: existingAdminRole?.role ?? "registered",
+        },
+      },
+    ],
+    admin,
+  )
+
+  revalidatePath("/admin/users")
   revalidatePath("/admin/logs")
 }

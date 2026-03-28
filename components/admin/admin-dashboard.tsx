@@ -15,8 +15,12 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { AdminMember, AdminMemberHistoryMap } from "@/lib/admin"
-import type { AdminReasonTemplate } from "@/lib/admin"
+import type {
+  AdminMember,
+  AdminMemberHistoryMap,
+  AdminReasonTemplate,
+  AdminRole,
+} from "@/lib/admin"
 
 type PeriodFilter = "this_month" | "all_time"
 type StatusFilter = "all" | "active" | "inactive"
@@ -26,10 +30,12 @@ export function AdminDashboard({
   members,
   historyByMemberId,
   reasonTemplates,
+  currentAdminRole,
 }: {
   members: AdminMember[]
   historyByMemberId: AdminMemberHistoryMap
   reasonTemplates: AdminReasonTemplate[]
+  currentAdminRole: AdminRole
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -327,6 +333,7 @@ export function AdminDashboard({
             isPending={isPending}
             feedbackMessage={feedbackMessage}
             feedbackError={feedbackError}
+            canDeleteMember={currentAdminRole === "super_admin"}
             onApply={handleApplyPoints}
             onUpdateMemberProfile={handleUpdateMemberProfile}
             onDeleteMember={handleDeleteMember}

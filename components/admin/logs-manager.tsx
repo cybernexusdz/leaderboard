@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import type { AdminAuditLog } from "@/lib/admin"
 
-type ActionFilter = "all" | "points" | "members" | "templates"
+type ActionFilter = "all" | "points" | "members" | "templates" | "auth_users"
 
 const actionLabels: Record<string, string> = {
   points_adjusted: "Points adjusted",
@@ -18,6 +18,9 @@ const actionLabels: Record<string, string> = {
   reason_template_created: "Template created",
   reason_template_updated: "Template updated",
   reason_template_deleted: "Template deleted",
+  auth_user_created: "Auth user created",
+  auth_user_updated: "Auth user updated",
+  auth_user_deleted: "Auth user deleted",
 }
 
 export function LogsManager({ logs }: { logs: AdminAuditLog[] }) {
@@ -47,7 +50,9 @@ export function LogsManager({ logs }: { logs: AdminAuditLog[] }) {
             ? log.actionType === "points_adjusted"
             : actionFilter === "members"
               ? log.entityType === "member"
-              : log.entityType === "reason_template"
+              : actionFilter === "templates"
+                ? log.entityType === "reason_template"
+                : log.entityType === "auth_user"
 
       return matchesSearch && matchesAction
     })
@@ -79,6 +84,7 @@ export function LogsManager({ logs }: { logs: AdminAuditLog[] }) {
               { label: "Points", value: "points" },
               { label: "Members", value: "members" },
               { label: "Templates", value: "templates" },
+              { label: "Auth Users", value: "auth_users" },
             ]}
             value={actionFilter}
             onChange={(value) => setActionFilter(value as ActionFilter)}

@@ -4,6 +4,7 @@ import {
   getAdminMemberHistory,
   getAdminMembers,
   getAdminReasonTemplates,
+  requireAdmin,
 } from "@/lib/admin"
 import { Suspense } from "react"
 
@@ -17,7 +18,8 @@ export default function AdminPage() {
 
 async function AdminPageContent() {
   try {
-    const [members, historyByMemberId, reasonTemplates] = await Promise.all([
+    const [{ role }, members, historyByMemberId, reasonTemplates] = await Promise.all([
+      requireAdmin(),
       getAdminMembers(),
       getAdminMemberHistory(),
       getAdminReasonTemplates(),
@@ -28,6 +30,7 @@ async function AdminPageContent() {
         members={members}
         historyByMemberId={historyByMemberId}
         reasonTemplates={reasonTemplates}
+        currentAdminRole={role}
       />
     )
   } catch (error) {

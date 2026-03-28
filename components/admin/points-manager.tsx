@@ -24,6 +24,7 @@ interface PointsManagerProps {
   isPending: boolean
   feedbackMessage: string | null
   feedbackError: string | null
+  canDeleteMember: boolean
   onApply: (input: { activity: string; pointsChange: number }) => void
   onUpdateMemberProfile: (input: {
     memberId: string
@@ -44,6 +45,7 @@ export function PointsManager({
   isPending,
   feedbackMessage,
   feedbackError,
+  canDeleteMember,
   onApply,
   onUpdateMemberProfile,
   onDeleteMember,
@@ -578,11 +580,16 @@ export function PointsManager({
                     type="button"
                     variant="destructive"
                     onClick={() => setIsDeleteConfirmOpen(true)}
-                    disabled={isPending}
+                    disabled={isPending || !canDeleteMember}
                     className="w-full"
                   >
                     Delete member
                   </Button>
+                  {!canDeleteMember ? (
+                    <p className="text-xs text-muted-foreground">
+                      Only super admins can permanently delete members.
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
@@ -676,7 +683,7 @@ export function PointsManager({
                 type="button"
                 variant="destructive"
                 onClick={handleDeleteMember}
-                disabled={isPending}
+                disabled={isPending || !canDeleteMember}
               >
                 {isPending ? "Deleting..." : "Delete member"}
               </Button>
