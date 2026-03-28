@@ -25,6 +25,18 @@ export type AdminReasonTemplate = {
   isActive: boolean
 }
 
+export type AdminAuditLog = {
+  id: string
+  actorAdminId: string
+  actorEmail: string | null
+  actionType: string
+  entityType: string
+  entityId: string | null
+  entityLabel: string | null
+  details: Record<string, unknown>
+  createdAt: string
+}
+
 export async function requireAdmin() {
   const supabase = await createClient()
   const {
@@ -46,7 +58,7 @@ export async function requireAdmin() {
     throw new Error("You do not have admin access.")
   }
 
-  return { supabase, userId: user.id }
+  return { supabase, userId: user.id, userEmail: user.email ?? null }
 }
 
 export async function getAdminMembers(): Promise<AdminMember[]> {
@@ -139,5 +151,36 @@ export async function getAdminReasonTemplates(): Promise<AdminReasonTemplate[]> 
     title: template.title,
     pointsChange: template.points_change,
     isActive: template.is_active,
+  }))
+}
+
+export async function getAdminAuditLogs(): Promise<AdminAuditLog[]> {
+  const { supabase } = await requireAdmin()
+
+  const { data, error } = await supabase
+    .from("admin_audit_logs")
+    .select(
+      "id, actor_admin_id, actor_email, action_type, entity_type, entity_id, entity_label, details, created_at",
+    )
+    .order("created_at", { ascending: false })
+    .limit(250)
+
+  if (error) {
+    throw error
+  }
+
+  return (data ?? []).map((log) => ({
+    id: log.id,
+    actorAdminId: log.actor_admin_id,
+    actorEmail: log.actor_email,
+    actionType: log.action_type,
+    entityType: log.entity_type,
+    entityId: log.entity_id,
+    entityLabel: log.entity_label,
+    details:
+      log.details && typeof log.details === "object" && !Array.isArray(log.details)
+        ? (log.details as Record<string, unknown>)
+        : {},
+    createdAt: log.created_at,
   }))
 }

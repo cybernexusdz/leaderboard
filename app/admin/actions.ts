@@ -43,6 +43,43 @@ type DeleteReasonTemplateInput = {
   templateId: string
 }
 
+type AdminAuditLogInsert = {
+  actionType: string
+  entityType: string
+  entityId?: string | null
+  entityLabel?: string | null
+  details?: Record<string, unknown>
+}
+
+async function insertAdminAuditLogs(
+  entries: AdminAuditLogInsert[],
+  actor: {
+    supabase: Awaited<ReturnType<typeof requireAdmin>>["supabase"]
+    userId: string
+    userEmail: string | null
+  },
+) {
+  if (entries.length === 0) {
+    return
+  }
+
+  const { error } = await actor.supabase.from("admin_audit_logs").insert(
+    entries.map((entry) => ({
+      actor_admin_id: actor.userId,
+      actor_email: actor.userEmail,
+      action_type: entry.actionType,
+      entity_type: entry.entityType,
+      entity_id: entry.entityId ?? null,
+      entity_label: entry.entityLabel ?? null,
+      details: entry.details ?? {},
+    })),
+  )
+
+  if (error) {
+    throw error
+  }
+}
+
 export async function applyPointsAdjustment({
   activity,
   memberIds,
@@ -62,7 +99,17 @@ export async function applyPointsAdjustment({
     throw new Error("Select at least one member.")
   }
 
-  const { supabase, userId } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase, userId } = admin
+
+  const { data: members, error: membersError } = await supabase
+    .from("members")
+    .select("id, display_name")
+    .in("id", memberIds)
+
+  if (membersError) {
+    throw membersError
+  }
 
   const { error: snapshotError } = await supabase.rpc(
     "capture_member_snapshots",
@@ -86,8 +133,25 @@ export async function applyPointsAdjustment({
     throw error
   }
 
+  await insertAdminAuditLogs(
+    (members ?? []).map((member) => ({
+      actionType: "points_adjusted",
+      entityType: "member",
+      entityId: member.id,
+      entityLabel: member.display_name,
+      details: {
+        activity: trimmedActivity,
+        pointsChange,
+        affectedMemberIds: memberIds,
+        affectedMemberCount: memberIds.length,
+      },
+    })),
+    admin,
+  )
+
   revalidatePath("/")
   revalidatePath("/admin")
+  revalidatePath("/admin/logs")
 }
 
 export async function updateMemberProfile({
@@ -103,7 +167,18 @@ export async function updateMemberProfile({
     throw new Error("Member name is required.")
   }
 
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
+
+  const { data: existingMember, error: existingMemberError } = await supabase
+    .from("members")
+    .select("id, display_name, avatar_url, is_active")
+    .eq("id", memberId)
+    .single()
+
+  if (existingMemberError) {
+    throw existingMemberError
+  }
 
   const { error } = await supabase
     .from("members")
@@ -118,8 +193,33 @@ export async function updateMemberProfile({
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "member_updated",
+        entityType: "member",
+        entityId: memberId,
+        entityLabel: trimmedName,
+        details: {
+          before: {
+            name: existingMember.display_name,
+            image: existingMember.avatar_url,
+            status: existingMember.is_active ? "active" : "inactive",
+          },
+          after: {
+            name: trimmedName,
+            image: trimmedImage || null,
+            status,
+          },
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/")
   revalidatePath("/admin")
+  revalidatePath("/admin/logs")
 }
 
 export async function createMember({
@@ -134,24 +234,58 @@ export async function createMember({
     throw new Error("Member name is required.")
   }
 
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
 
-  const { error } = await supabase.from("members").insert({
-    display_name: trimmedName,
-    avatar_url: trimmedImage || null,
-    is_active: status === "active",
-  })
+  const { data: createdMember, error } = await supabase
+    .from("members")
+    .insert({
+      display_name: trimmedName,
+      avatar_url: trimmedImage || null,
+      is_active: status === "active",
+    })
+    .select("id, display_name")
+    .single()
 
   if (error) {
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "member_created",
+        entityType: "member",
+        entityId: createdMember.id,
+        entityLabel: createdMember.display_name,
+        details: {
+          name: trimmedName,
+          image: trimmedImage || null,
+          status,
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/")
   revalidatePath("/admin")
+  revalidatePath("/admin/logs")
 }
 
 export async function deleteMember({ memberId }: DeleteMemberInput) {
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
+
+  const { data: existingMember, error: existingMemberError } = await supabase
+    .from("members")
+    .select("id, display_name, avatar_url, is_active")
+    .eq("id", memberId)
+    .single()
+
+  if (existingMemberError) {
+    throw existingMemberError
+  }
 
   const { error } = await supabase.from("members").delete().eq("id", memberId)
 
@@ -159,8 +293,26 @@ export async function deleteMember({ memberId }: DeleteMemberInput) {
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "member_deleted",
+        entityType: "member",
+        entityId: existingMember.id,
+        entityLabel: existingMember.display_name,
+        details: {
+          name: existingMember.display_name,
+          image: existingMember.avatar_url,
+          status: existingMember.is_active ? "active" : "inactive",
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/")
   revalidatePath("/admin")
+  revalidatePath("/admin/logs")
 }
 
 export async function createReasonTemplate({
@@ -178,20 +330,43 @@ export async function createReasonTemplate({
     throw new Error("Template points must be a non-zero number.")
   }
 
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
 
-  const { error } = await supabase.from("reason_templates").insert({
-    title: trimmedTitle,
-    points_change: pointsChange,
-    is_active: isActive,
-  })
+  const { data: createdTemplate, error } = await supabase
+    .from("reason_templates")
+    .insert({
+      title: trimmedTitle,
+      points_change: pointsChange,
+      is_active: isActive,
+    })
+    .select("id, title")
+    .single()
 
   if (error) {
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "reason_template_created",
+        entityType: "reason_template",
+        entityId: createdTemplate.id,
+        entityLabel: createdTemplate.title,
+        details: {
+          title: trimmedTitle,
+          pointsChange,
+          isActive,
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/admin")
   revalidatePath("/admin/templates")
+  revalidatePath("/admin/logs")
 }
 
 export async function updateReasonTemplate({
@@ -210,7 +385,18 @@ export async function updateReasonTemplate({
     throw new Error("Template points must be a non-zero number.")
   }
 
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
+
+  const { data: existingTemplate, error: existingTemplateError } = await supabase
+    .from("reason_templates")
+    .select("id, title, points_change, is_active")
+    .eq("id", templateId)
+    .single()
+
+  if (existingTemplateError) {
+    throw existingTemplateError
+  }
 
   const { error } = await supabase
     .from("reason_templates")
@@ -225,14 +411,50 @@ export async function updateReasonTemplate({
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "reason_template_updated",
+        entityType: "reason_template",
+        entityId: templateId,
+        entityLabel: trimmedTitle,
+        details: {
+          before: {
+            title: existingTemplate.title,
+            pointsChange: existingTemplate.points_change,
+            isActive: existingTemplate.is_active,
+          },
+          after: {
+            title: trimmedTitle,
+            pointsChange,
+            isActive,
+          },
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/admin")
   revalidatePath("/admin/templates")
+  revalidatePath("/admin/logs")
 }
 
 export async function deleteReasonTemplate({
   templateId,
 }: DeleteReasonTemplateInput) {
-  const { supabase } = await requireAdmin()
+  const admin = await requireAdmin()
+  const { supabase } = admin
+
+  const { data: existingTemplate, error: existingTemplateError } = await supabase
+    .from("reason_templates")
+    .select("id, title, points_change, is_active")
+    .eq("id", templateId)
+    .single()
+
+  if (existingTemplateError) {
+    throw existingTemplateError
+  }
 
   const { error } = await supabase
     .from("reason_templates")
@@ -243,6 +465,24 @@ export async function deleteReasonTemplate({
     throw error
   }
 
+  await insertAdminAuditLogs(
+    [
+      {
+        actionType: "reason_template_deleted",
+        entityType: "reason_template",
+        entityId: existingTemplate.id,
+        entityLabel: existingTemplate.title,
+        details: {
+          title: existingTemplate.title,
+          pointsChange: existingTemplate.points_change,
+          isActive: existingTemplate.is_active,
+        },
+      },
+    ],
+    admin,
+  )
+
   revalidatePath("/admin")
   revalidatePath("/admin/templates")
+  revalidatePath("/admin/logs")
 }

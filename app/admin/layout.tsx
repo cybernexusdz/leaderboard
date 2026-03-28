@@ -29,6 +29,12 @@ export default function AdminLayout({
             >
               Templates
             </Link>
+            <Link
+              href="/admin/logs"
+              className="rounded-full px-3 py-1.5 font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              Logs
+            </Link>
           </div>
           <Suspense>
             <AuthButton />
