@@ -18,6 +18,7 @@ export type AdminMemberHistoryEntry = {
   activity: string
   pointsChange: number
   date: string
+  awardedByName: string | null
 }
 
 export type AdminMemberHistoryMap = Record<string, AdminMemberHistoryEntry[]>
@@ -148,8 +149,10 @@ export async function getAdminMemberHistory(): Promise<AdminMemberHistoryMap> {
   const { supabase } = await requireAdmin()
 
   const { data, error } = await supabase
-    .from("point_events")
-    .select("id, member_id, activity, points_change, created_at")
+    .from("member_point_history")
+    .select(
+      "id, member_id, activity, points_change, created_at, awarded_by_name",
+    )
     .order("created_at", { ascending: false })
 
   if (error) {
@@ -166,6 +169,7 @@ export async function getAdminMemberHistory(): Promise<AdminMemberHistoryMap> {
       activity: row.activity,
       pointsChange: row.points_change,
       date: row.created_at,
+      awardedByName: row.awarded_by_name,
     })
 
     return acc

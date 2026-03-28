@@ -106,8 +106,9 @@ export function PointsManager({
     )
   }, [activeReasonTemplates, templateSearch])
   const selectedTemplate =
-    activeReasonTemplates.find((template) => template.id === selectedTemplateId) ??
-    null
+    activeReasonTemplates.find(
+      (template) => template.id === selectedTemplateId,
+    ) ?? null
   const selectedMemberPoints = selectedMember
     ? periodFilter === "this_month"
       ? selectedMember.thisMonthPoints
@@ -117,7 +118,11 @@ export function PointsManager({
   const handleApplyPoints = () => {
     const pointsChange = Number(pointsInput)
 
-    if (!activity.trim() || !Number.isFinite(pointsChange) || pointsChange === 0) {
+    if (
+      !activity.trim() ||
+      !Number.isFinite(pointsChange) ||
+      pointsChange === 0
+    ) {
       return
     }
 
@@ -211,7 +216,7 @@ export function PointsManager({
               <div className="pt-2 text-xs text-muted-foreground">
                 The same reason and points change will be applied to all checked
                 members.
-              </div> 
+              </div>
             </>
           ) : selectedMember ? (
             <>
@@ -337,7 +342,7 @@ export function PointsManager({
               disabled={isPending || !selectedTemplate || affectedCount === 0}
               className="w-full"
             >
-            Submit
+              Submit
             </Button>
           </Card>
 
@@ -364,7 +369,7 @@ export function PointsManager({
                   id="points-input"
                   type="number"
                   placeholder="Use positive or negative values"
-                  value={pointsInput} 
+                  value={pointsInput}
                   onChange={(event) => setPointsInput(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
@@ -431,11 +436,15 @@ export function PointsManager({
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Points change</span>
+                <span className="text-sm text-muted-foreground">
+                  Points change
+                </span>
                 <span
                   className={cn(
                     "font-semibold chakra-bold",
-                    Number(pointsInput) >= 0 ? "text-green-600" : "text-red-600",
+                    Number(pointsInput) >= 0
+                      ? "text-green-600"
+                      : "text-red-600",
                   )}
                 >
                   {Number(pointsInput) > 0 ? "+" : ""}
@@ -444,7 +453,9 @@ export function PointsManager({
               </div>
               <div className="space-y-1">
                 <span className="text-sm text-muted-foreground">Reason</span>
-                <p className="text-sm font-medium text-foreground">{activity}</p>
+                <p className="text-sm font-medium text-foreground">
+                  {activity}
+                </p>
               </div>
             </div>
 
@@ -635,6 +646,14 @@ export function PointsManager({
                             <p className="mt-1 text-xs text-muted-foreground">
                               {formatHistoryDate(entry.date)}
                             </p>
+                            {entry.awardedByName ? (
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                Added by{" "}
+                                <span className="font-medium">
+                                  {entry.awardedByName}
+                                </span>
+                              </p>
+                            ) : null}
                           </div>
                           <div className="flex items-start gap-2">
                             <span
@@ -731,8 +750,8 @@ export function PointsManager({
                   Remove point history entry
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  This will remove this points change from {selectedMember.name}&apos;s
-                  history and update their totals.
+                  This will remove this points change from {selectedMember.name}
+                  &apos;s history and update their totals.
                 </p>
               </div>
               <Button
