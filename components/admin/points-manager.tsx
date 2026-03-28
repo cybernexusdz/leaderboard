@@ -163,6 +163,11 @@ export function PointsManager({
     setPointsInput(String(template.pointsChange))
   }
 
+  const handleClearTemplateSelection = () => {
+    setTemplateSearch("")
+    setSelectedTemplateId(null)
+  }
+
   const handleOpenTemplateConfirmation = () => {
     if (!selectedTemplate || affectedCount === 0) {
       return
@@ -241,18 +246,31 @@ export function PointsManager({
           <Card className="mt-4 space-y-4 p-4">
             <div className="space-y-2">
               <Label htmlFor="template-search" className="text-sm font-medium">
-                Reason template
+                Choose template
               </Label>
-              <Input
-                id="template-search"
-                type="text"
-                placeholder="Search predefined reasons..."
-                value={templateSearch}
-                onChange={(event) => {
-                  setTemplateSearch(event.target.value)
-                  setSelectedTemplateId(null)
-                }}
-              />
+              <div className="relative">
+                <Input
+                  id="template-search"
+                  type="text"
+                  placeholder="Search predefined reasons..."
+                  value={templateSearch}
+                  onChange={(event) => {
+                    setTemplateSearch(event.target.value)
+                    setSelectedTemplateId(null)
+                  }}
+                  className={templateSearch ? "pr-10" : undefined}
+                />
+                {templateSearch ? (
+                  <button
+                    type="button"
+                    onClick={handleClearTemplateSelection}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    aria-label="Clear template search"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                ) : null}
+              </div>
             </div>
 
             <div className="max-h-48 space-y-2 overflow-y-auto rounded-xl border border-border p-2">
@@ -288,7 +306,7 @@ export function PointsManager({
                 <p className="text-sm font-medium text-foreground">
                   {selectedTemplate.title}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p className="chakra-bold mt-1 text-sm text-muted-foreground">
                   Points: {selectedTemplate.pointsChange > 0 ? "+" : ""}
                   {selectedTemplate.pointsChange}
                 </p>
@@ -328,14 +346,14 @@ export function PointsManager({
                   id="points-input"
                   type="number"
                   placeholder="Use positive or negative values"
-                  value={pointsInput}
+                  value={pointsInput} 
                   onChange={(event) => setPointsInput(event.target.value)}
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
                       handleOpenConfirmation()
                     }
                   }}
-                  className="flex-1"
+                  className="flex-1 chakra-bold"
                 />
                 <Button
                   onClick={handleOpenConfirmation}
@@ -398,7 +416,7 @@ export function PointsManager({
                 <span className="text-sm text-muted-foreground">Points change</span>
                 <span
                   className={cn(
-                    "font-semibold",
+                    "font-semibold chakra-bold",
                     Number(pointsInput) >= 0 ? "text-green-600" : "text-red-600",
                   )}
                 >
