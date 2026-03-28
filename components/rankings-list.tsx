@@ -66,13 +66,17 @@ function shouldShowPodium(users: LeaderboardUser[]) {
 }
  
 function TrendIndicator({
-  previousRank,
-  currentRank,
+  user,
+  hasHistory,
 }: {
-  previousRank?: number | null
-  currentRank: number
+  user: LeaderboardUser
+  hasHistory: boolean
 }) {
-  const rankChange = getRankChange(previousRank, currentRank)
+  if (user.points === 0 && !hasHistory) {
+    return null
+  }
+
+  const rankChange = getRankChange(user.previousRank, user.rank)
 
   if (rankChange > 0) {
     return <ArrowUpCircleIcon className="size-5 text-green-600" />
@@ -105,9 +109,11 @@ function UserAvatar({
 
 function RankingsListItem({
   user,
+  hasHistory,
   onSelect,
 }: {
   user: LeaderboardUser
+  hasHistory: boolean
   onSelect: (user: LeaderboardUser) => void
 }) {
   return (
@@ -127,10 +133,7 @@ function RankingsListItem({
         />
         <span className="flex items-center gap-2 text-base font-medium sm:text-lg">
           {user.name}
-          <TrendIndicator
-            previousRank={user.previousRank}
-            currentRank={user.rank}
-          />
+          <TrendIndicator user={user} hasHistory={hasHistory} />
         </span>
       </div>
 
@@ -266,6 +269,7 @@ export function RankingsList({
           <RankingsListItem
             key={user.id}
             user={user}
+            hasHistory={(historyByUserId[user.id] ?? []).length > 0}
             onSelect={handleSelectUser}
           />
         ))}
