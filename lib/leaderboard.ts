@@ -16,6 +16,7 @@ export type PointsHistoryEntry = {
   date: string
   activity: string
   pointsChange: number
+  awardedByName: string | null
 }
 
 export type LeaderboardHistoryMap = Record<string, PointsHistoryEntry[]>
@@ -73,7 +74,9 @@ export async function getLeaderboardHistory(
 
   let query = supabase
     .from("member_point_history")
-    .select("id, member_id, activity, points_change, created_at")
+    .select(
+      "id, member_id, activity, points_change, created_at, awarded_by_name",
+    )
     .in("member_id", memberIds)
     .order("created_at", { ascending: false })
 
@@ -101,6 +104,7 @@ export async function getLeaderboardHistory(
       activity: row.activity,
       pointsChange: row.points_change,
       date: row.created_at,
+      awardedByName: row.awarded_by_name,
     })
 
     return acc

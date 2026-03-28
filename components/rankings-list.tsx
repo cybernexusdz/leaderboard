@@ -348,6 +348,11 @@ function PointsHistoryModal({
                     <p className="mt-1 text-sm text-muted-foreground">
                       {formatHistoryDate(entry.date)}
                     </p>
+                    {entry.awardedByName ? (
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        Added by <span className="font-medium">{entry.awardedByName}</span>
+                      </p>
+                    ) : null}
                   </div>
                   <div
                     className={cn(
